@@ -3,9 +3,7 @@ import { Inter } from 'next/font/google'
 
 import '@/styles/globals.css'
 
-import { LayoutProps } from '@/types/next'
-
-import { cn } from '@/lib/cn'
+import { cn } from '@/library/cn'
 
 import { Analytics } from '@/components/analytics'
 import { BreakpointsIndicator } from '@/components/breakpoints-indicator'
@@ -58,7 +56,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: LayoutProps) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en" className="h-full">
       <body className={cn('h-full font-sans', inter.variable)}>
