@@ -1,9 +1,9 @@
 'use client'
 
-import { Suspense } from 'react'
-import dynamic from 'next/dynamic'
 import { Physics } from '@react-three/cannon'
 import { Canvas } from '@react-three/fiber'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
 
 import { ControlsProvider } from '@/components/matter-hero/use-controls'
 
@@ -17,7 +17,7 @@ const Controls = dynamic(() => import('@/components/matter-hero/Controls'), {
 export default function Home() {
   return (
     <ControlsProvider>
-      <main className="w-screen h-screen">
+      <main className="h-screen w-screen">
         <Canvas>
           <Suspense fallback={null}>
             <Physics>

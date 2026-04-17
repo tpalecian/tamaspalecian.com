@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 export interface ErrorProps {
   /**
    * The instance of the error that occurred.
@@ -14,21 +16,21 @@ export interface HeadProps {
   /**
    * The dynamic route parameters object from the root segment down to the current head.
    */
-  params: Object
+  params: Record<string, string | string[] | undefined>
 }
 
 export interface LayoutProps {
   /**
    * Content to be rendered inside the layout.
    */
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export interface PageProps {
   /**
    * The dynamic route parameters object from the root segment down to the current page.
    */
-  params: Object
+  params: Record<string, string | string[] | undefined>
 
   /**
    * The URL search parameters object.

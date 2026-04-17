@@ -1,7 +1,6 @@
-import { useMemo, useRef, useState, type ReactElement } from 'react'
 import { useBox, usePlane } from '@react-three/cannon'
 import { useFrame, useThree } from '@react-three/fiber'
-import * as THREE from 'three'
+import { type ReactElement, useMemo, useState } from 'react'
 
 import { useControls } from '@/components/matter-hero/use-controls'
 

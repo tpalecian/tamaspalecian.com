@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Html, Text } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import Matter from 'matter-js'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Pane } from 'tweakpane'
 
@@ -54,13 +54,13 @@ const PhysicsText = ({ text }) => {
     return () => pane.dispose()
   }, [])
 
-  const createSVGTexture = (svgString) => {
+  const createSVGTexture = useCallback((svgString: string) => {
     const blob = new Blob([svgString], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(blob)
     const texture = new THREE.TextureLoader().load(url)
     URL.revokeObjectURL(url)
     return texture
-  }
+  }, [])
 
   const svgTextures = useMemo(() => {
     return Object.fromEntries(
@@ -69,7 +69,7 @@ const PhysicsText = ({ text }) => {
         createSVGTexture(svg),
       ])
     )
-  }, [])
+  }, [createSVGTexture])
 
   useEffect(() => {
     const engine = Matter.Engine.create()
@@ -165,7 +165,7 @@ const PhysicsText = ({ text }) => {
       Matter.Engine.clear(engine)
       Matter.Events.off(mouseConstraint)
     }
-  }, [text, size, svgTextures])
+  }, [text, size])
 
   useFrame(() => {
     Matter.Engine.update(engineRef.current)
@@ -197,12 +197,12 @@ const PhysicsText = ({ text }) => {
   return (
     <group ref={sceneRef}>
       {words.map((word, index) => (
-        <Text key={index} name={`word-${index}`} fontSize={20} color="black">
+        <Text key={word.id} name={`word-${index}`} fontSize={20} color="black">
           {word.label}
         </Text>
       ))}
       {blocks.map((block, index) => (
-        <mesh key={index} name={`block-${index}`}>
+        <mesh key={block.id} name={`block-${index}`}>
           <planeGeometry args={[20 * block.scale, 20 * block.scale]} />
           <meshBasicMaterial
             map={svgTextures[block.icon]}

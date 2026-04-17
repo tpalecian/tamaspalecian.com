@@ -3,10 +3,9 @@ import { Inter } from 'next/font/google'
 
 import '@/styles/globals.css'
 
-import { cn } from '@/library/cn'
-
 import { Analytics } from '@/components/analytics'
 import { BreakpointsIndicator } from '@/components/breakpoints-indicator'
+import { cn } from '@/library/cn'
 
 const inter = Inter({
   variable: '--font-inter',

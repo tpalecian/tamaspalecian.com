@@ -2,7 +2,7 @@ export function BreakpointsIndicator() {
   if (process.env.NODE_ENV === 'production') return null
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex h-6 w-6 items-center justify-center rounded-full bg-purple-600 p-3 py-2 px-4 font-mono text-xs text-white">
+    <div className="fixed right-4 bottom-4 z-50 flex h-6 w-6 items-center justify-center rounded-full bg-purple-600 p-3 px-4 py-2 font-mono text-white text-xs">
       <div className="block sm:hidden">xs</div>
       <div className="hidden sm:block md:hidden lg:hidden xl:hidden 2xl:hidden">
         sm

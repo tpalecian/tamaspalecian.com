@@ -1,4 +1,4 @@
-import { createContext, Dispatch, useContext, useReducer } from 'react'
+import { createContext, type Dispatch, useContext, useReducer } from 'react'
 
 interface ControlsState {
   blockCount: number
