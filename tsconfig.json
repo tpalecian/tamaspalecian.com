@@ -17,14 +17,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@public/*": [
-        "../public/*"
-      ]
+      "@/*": ["./src/*"],
+      "@public/*": ["./public/*"]
     },
     "plugins": [
       {

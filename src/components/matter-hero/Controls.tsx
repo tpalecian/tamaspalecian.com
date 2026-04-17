@@ -12,23 +12,21 @@ export default function Controls() {
 
     const pane = new Pane({ container: containerRef.current })
 
-    pane.addBinding(state, 'blockCount', { min: 1, max: 100, step: 1 })
-    pane.addBinding(state, 'x', { min: -1, max: 1, step: 0.01 })
-    pane.addBinding(state, 'y', { min: -1, max: 1, step: 0.01 })
-
-    pane.on('change', (ev) => {
-      switch (ev.presetKey) {
-        case 'blockCount':
-          dispatch({ type: 'SET_BLOCK_COUNT', payload: ev.value })
-          break
-        case 'x':
-          dispatch({ type: 'SET_X', payload: ev.value })
-          break
-        case 'y':
-          dispatch({ type: 'SET_Y', payload: ev.value })
-          break
-      }
-    })
+    pane
+      .addBinding(state, 'blockCount', { min: 1, max: 100, step: 1 })
+      .on('change', (ev) => {
+        dispatch({ type: 'SET_BLOCK_COUNT', payload: ev.value })
+      })
+    pane
+      .addBinding(state, 'x', { min: -1, max: 1, step: 0.01 })
+      .on('change', (ev) => {
+        dispatch({ type: 'SET_X', payload: ev.value })
+      })
+    pane
+      .addBinding(state, 'y', { min: -1, max: 1, step: 0.01 })
+      .on('change', (ev) => {
+        dispatch({ type: 'SET_Y', payload: ev.value })
+      })
 
     return () => pane.dispose()
   }, [state, dispatch])
