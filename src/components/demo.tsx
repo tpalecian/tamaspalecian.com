@@ -93,7 +93,7 @@ const PhysicsText = ({ text }) => {
 
     const createBlocks = () => {
       const newBlocks = Array(config.blockCount)
-        .fill()
+        .fill(undefined)
         .map(() => {
           const scale = THREE.MathUtils.lerp(
             config.lower,

@@ -12,9 +12,7 @@ const ContentSecurityPolicy = `
 const nextConfig = {
   reactStrictMode: true,
 
-  experimental: {
-    ppr: true,
-  },
+  cacheComponents: true,
   // headers() {
   //   return [
   //     {
