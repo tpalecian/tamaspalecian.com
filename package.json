@@ -15,8 +15,6 @@
     "@react-three/cannon": "^6.6.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.0",
-    "@savvywombat/tailwindcss-grid-areas": "^4.0.0",
-    "@tailwindcss/container-queries": "^0.1.1",
     "@tweakpane/core": "^2.0.5",
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
@@ -27,12 +25,12 @@
     "react-dom": "19.2.5",
     "sharp": "^0.34.5",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss-animate": "^1.0.7",
     "three": "^0.184.0",
     "tweakpane": "^4.0.5"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.6.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",

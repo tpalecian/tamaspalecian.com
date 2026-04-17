@@ -9,7 +9,7 @@ import { Analytics } from '@/components/analytics'
 import { BreakpointsIndicator } from '@/components/breakpoints-indicator'
 
 const inter = Inter({
-  variable: '--font-sans',
+  variable: '--font-inter',
   weight: ['400', '500', '600', '700'],
   display: 'swap',
   subsets: ['latin'],
