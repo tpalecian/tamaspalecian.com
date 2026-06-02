@@ -1,174 +1,15 @@
 @import "tailwindcss";
+@import "./tokens/index.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
-
-/**
- * Tailwind `@theme` defaults: `Auto` (`data-theme="auto"`) uses `light-dark()` + `html.dark`
- * (`ThemeSync` + ambient). Other `data-theme` presets override tokens below.
- */
-@theme inline {
-  --font-sans:
-    var(--font-inter), ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-  --color-background: light-dark(#f3f0e8, #141210);
-  --color-foreground: light-dark(#161412, #ebe8e3);
-  --color-muted: light-dark(#58544d, #9b948a);
-  --color-border-subtle: light-dark(#e1ddd4, #2a2622);
-  --color-grid-line: light-dark(#aea69a, #524a42);
-  --color-construction-stroke: light-dark(#524a42, #a39a8f);
-
-  --color-accent: light-dark(#c2560e, #eab308);
-  --color-accent-foreground: light-dark(#fffaf5, #141210);
-  --color-accent-muted: light-dark(
-    color-mix(in srgb, var(--color-accent) 14%, transparent),
-    color-mix(in srgb, var(--color-accent) 18%, transparent)
-  );
-  --color-ring: light-dark(
-    color-mix(in srgb, var(--color-accent) 26%, transparent),
-    color-mix(in srgb, var(--color-accent) 28%, transparent)
-  );
-
-  --color-surface-elevated: light-dark(#faf7f0, #1f1c19);
-  --color-shadow: light-dark(rgb(22 20 17 / 0.08), rgb(0 0 0 / 0.42));
-
-  --shadow-portfolio:
-    0 1px 2px var(--color-shadow), 0 8px 24px var(--color-shadow);
-
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-
-  --max-width-content: 72rem;
-}
 
 :root {
   color-scheme: light;
 }
 
 .dark {
-  color-scheme: dark;
-}
-
-/*
- * Time-of-day palettes (Billy Sweeney–style picker). Only `data-theme` values other
- * than `auto` use these; `auto` relies on `light-dark()` + `.dark` from ThemeSync.
- */
-html[data-theme="dawn"] {
-  --color-background: #e9eaf4;
-  --color-foreground: #201f2d;
-  --color-muted: #5e5c6f;
-  --color-border-subtle: #dad9ec;
-  --color-grid-line: #9b98b3;
-  --color-construction-stroke: #59566c;
-  --color-accent: #6d5fcf;
-  --color-accent-foreground: #faf9ff;
-  --color-accent-muted: color-mix(
-    in srgb,
-    var(--color-accent) 16%,
-    transparent
-  );
-  --color-ring: color-mix(in srgb, var(--color-accent) 30%, transparent);
-  --color-surface-elevated: #f3f3fc;
-  --color-shadow: rgb(24 26 48 / 0.09);
-  --shadow-portfolio:
-    0 1px 2px var(--color-shadow), 0 8px 24px var(--color-shadow);
-}
-
-html[data-theme="day"] {
-  --color-background: #f3f0e8;
-  --color-foreground: #161412;
-  --color-muted: #58544d;
-  --color-border-subtle: #e1ddd4;
-  --color-grid-line: #aea69a;
-  --color-construction-stroke: #524a42;
-  --color-accent: #c2560e;
-  --color-accent-foreground: #fffaf5;
-  --color-accent-muted: color-mix(
-    in srgb,
-    var(--color-accent) 14%,
-    transparent
-  );
-  --color-ring: color-mix(in srgb, var(--color-accent) 28%, transparent);
-  --color-surface-elevated: #faf7f0;
-  --color-shadow: rgb(22 20 17 / 0.08);
-  --shadow-portfolio:
-    0 1px 2px var(--color-shadow), 0 8px 24px var(--color-shadow);
-}
-
-html[data-theme="golden-hour"] {
-  --color-background: #f6ecdd;
-  --color-foreground: #2f2115;
-  --color-muted: #6e5b4a;
-  --color-border-subtle: #e9d8c6;
-  --color-grid-line: #c9a98c;
-  --color-construction-stroke: #856b55;
-  --color-accent: #b94a08;
-  --color-accent-foreground: #fff8f0;
-  --color-accent-muted: color-mix(
-    in srgb,
-    var(--color-accent) 15%,
-    transparent
-  );
-  --color-ring: color-mix(in srgb, var(--color-accent) 28%, transparent);
-  --color-surface-elevated: #fcf5eb;
-  --color-shadow: rgb(48 34 21 / 0.09);
-  --shadow-portfolio:
-    0 1px 2px var(--color-shadow), 0 8px 24px var(--color-shadow);
-}
-
-html[data-theme="dusk"] {
-  --color-background: #161326;
-  --color-foreground: #ece8fb;
-  --color-muted: #9490aa;
-  --color-border-subtle: #302946;
-  --color-grid-line: #5f5678;
-  --color-construction-stroke: #9a92b8;
-  --color-accent: #c9b8ff;
-  --color-accent-foreground: #110f1f;
-  --color-accent-muted: color-mix(
-    in srgb,
-    var(--color-accent) 18%,
-    transparent
-  );
-  --color-ring: color-mix(in srgb, var(--color-accent) 30%, transparent);
-  --color-surface-elevated: #211d38;
-  --color-shadow: rgb(0 0 0 / 0.45);
-  --shadow-portfolio:
-    0 1px 2px var(--color-shadow), 0 8px 24px var(--color-shadow);
-}
-
-html[data-theme="night"] {
-  --color-background: #141210;
-  --color-foreground: #ebe8e3;
-  --color-muted: #9b948a;
-  --color-border-subtle: #2a2622;
-  --color-grid-line: #524a42;
-  --color-construction-stroke: #a39a8f;
-  --color-accent: #eab308;
-  --color-accent-foreground: #141210;
-  --color-accent-muted: color-mix(
-    in srgb,
-    var(--color-accent) 18%,
-    transparent
-  );
-  --color-ring: color-mix(in srgb, var(--color-accent) 28%, transparent);
-  --color-surface-elevated: #1f1c19;
-  --color-shadow: rgb(0 0 0 / 0.42);
-  --shadow-portfolio:
-    0 1px 2px var(--color-shadow), 0 8px 24px var(--color-shadow);
-}
-
-html[data-theme="dawn"],
-html[data-theme="day"],
-html[data-theme="golden-hour"] {
-  color-scheme: light;
-}
-
-html[data-theme="dusk"],
-html[data-theme="night"] {
   color-scheme: dark;
 }
 
@@ -179,13 +20,17 @@ html[data-theme="night"] {
   }
 
   body {
-    @apply min-h-dvh antialiased;
+    @apply min-h-dvh antialiased text-body text-foreground;
     background-color: var(--color-background);
-    color: var(--color-foreground);
   }
 
   ::selection {
     background-color: var(--color-accent-muted);
     color: var(--color-foreground);
+  }
+
+  :focus-visible {
+    outline: var(--outline-width-focus) solid var(--color-ring);
+    outline-offset: var(--outline-offset-focus);
   }
 }

@@ -1,0 +1,18 @@
+/**
+ * Layout tokens — page structure, gutters, and content widths.
+ */
+@theme {
+  --spacing-gutter: clamp(1rem, 4vw, 2rem);
+  --spacing-section-y: clamp(4rem, 12vh, 8rem);
+  --spacing-section-y-lg: clamp(6rem, 18vh, 12rem);
+  --spacing-stack-sm: 0.75rem;
+  --spacing-stack: 1.25rem;
+  --spacing-stack-lg: 2rem;
+  --spacing-stack-xl: 3.5rem;
+
+  --max-width-content: 72rem;
+  --max-width-prose: 42rem;
+  --max-width-narrow: 28rem;
+
+  --breakpoint-xs: 30rem;
+}
