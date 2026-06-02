@@ -78,8 +78,8 @@ export default function TokensLabPage() {
           Portfolio tokens
         </h1>
         <p className="mt-stack text-body-lg text-muted">
-          Semantic colors, primitives, and typography for Tailwind CSS 4. Switch
-          the time-of-day theme (bottom-left) to preview palette shifts.
+          Semantic colors, primitives, and typography for Tailwind CSS 4. Colors
+          follow your system light or dark preference via light-dark().
         </p>
       </header>
 

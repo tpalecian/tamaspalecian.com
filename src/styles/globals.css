@@ -1,16 +1,10 @@
 @import "tailwindcss";
 @import "./tokens/index.css";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
 
 :root {
-  color-scheme: light;
-}
-
-.dark {
-  color-scheme: dark;
+  color-scheme: light dark;
 }
 
 @layer base {
