@@ -15,9 +15,6 @@ const nextConfig = {
 
   cacheComponents: true,
 
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   // headers() {
   //   return [
   //     {
