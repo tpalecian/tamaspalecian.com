@@ -1,8 +1,6 @@
 /**
  * Semantic tokens — role-based colors and effects.
- * Values use light-dark() for `auto` mode; time-of-day presets override in themes/time-of-day.css.
- *
- * @theme inline ensures utilities resolve var() at use-site (required for nested theme overrides).
+ * Values use light-dark() and follow the user’s preferred color scheme.
  */
 @theme inline {
   /* Surfaces */
