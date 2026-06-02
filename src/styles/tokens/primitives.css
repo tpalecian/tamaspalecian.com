@@ -1,0 +1,45 @@
+/**
+ * Primitive tokens — stable scales that rarely change per theme.
+ * Exposed as Tailwind utilities via @theme (e.g. rounded-sm, z-overlay).
+ */
+@theme {
+  /* Warm neutral ramp (portfolio base; complements default stone) */
+  --color-warm-50: oklch(98.5% 0.006 85);
+  --color-warm-100: oklch(96.8% 0.009 82);
+  --color-warm-200: oklch(92.5% 0.012 78);
+  --color-warm-300: oklch(86.5% 0.016 72);
+  --color-warm-400: oklch(72% 0.02 68);
+  --color-warm-500: oklch(56% 0.022 62);
+  --color-warm-600: oklch(44% 0.02 58);
+  --color-warm-700: oklch(36% 0.018 55);
+  --color-warm-800: oklch(26% 0.014 52);
+  --color-warm-900: oklch(20% 0.012 50);
+  --color-warm-950: oklch(14% 0.01 48);
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* Z-index layers */
+  --z-below: -1;
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+  --z-devtools: 60;
+
+  /* Durations (for transition-duration-*) */
+  --duration-instant: 0ms;
+  --duration-fast: 120ms;
+  --duration-normal: 220ms;
+  --duration-slow: 380ms;
+  --duration-slower: 560ms;
+  --duration-hero: 1600ms;
+}

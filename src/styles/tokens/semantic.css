@@ -1,0 +1,51 @@
+/**
+ * Semantic tokens — role-based colors and effects.
+ * Values use light-dark() for `auto` mode; time-of-day presets override in themes/time-of-day.css.
+ *
+ * @theme inline ensures utilities resolve var() at use-site (required for nested theme overrides).
+ */
+@theme inline {
+  /* Surfaces */
+  --color-background: light-dark(#f3f0e8, #141210);
+  --color-foreground: light-dark(#161412, #ebe8e3);
+  --color-muted: light-dark(#58544d, #9b948a);
+  --color-muted-foreground: light-dark(#6e6962, #b5aea4);
+  --color-surface-elevated: light-dark(#faf7f0, #1f1c19);
+  --color-surface-sunken: light-dark(#ebe6dc, #0f0d0b);
+
+  /* Borders & guides */
+  --color-border: light-dark(#d4cfc4, #35302b);
+  --color-border-subtle: light-dark(#e1ddd4, #2a2622);
+  --color-grid-line: light-dark(#aea69a, #524a42);
+  --color-construction-stroke: light-dark(#524a42, #a39a8f);
+
+  /* Accent */
+  --color-accent: light-dark(#c2560e, #eab308);
+  --color-accent-foreground: light-dark(#fffaf5, #141210);
+  --color-accent-muted: light-dark(
+    color-mix(in srgb, var(--color-accent) 14%, transparent),
+    color-mix(in srgb, var(--color-accent) 18%, transparent)
+  );
+  --color-ring: light-dark(
+    color-mix(in srgb, var(--color-accent) 26%, transparent),
+    color-mix(in srgb, var(--color-accent) 28%, transparent)
+  );
+
+  /* Feedback (reserved for forms / status) */
+  --color-destructive: light-dark(#b42318, #f87171);
+  --color-destructive-foreground: light-dark(#fffaf5, #141210);
+  --color-success: light-dark(#15803d, #4ade80);
+
+  /* Effects */
+  --color-shadow: light-dark(rgb(22 20 17 / 0.08), rgb(0 0 0 / 0.42));
+  --shadow-xs: 0 1px 2px var(--color-shadow);
+  --shadow-sm: 0 1px 3px var(--color-shadow), 0 2px 6px var(--color-shadow);
+  --shadow-md: 0 2px 4px var(--color-shadow), 0 8px 20px var(--color-shadow);
+  --shadow-portfolio:
+    0 1px 2px var(--color-shadow), 0 8px 24px var(--color-shadow);
+  --shadow-lg: 0 4px 8px var(--color-shadow), 0 16px 40px var(--color-shadow);
+
+  /* Focus */
+  --outline-width-focus: 2px;
+  --outline-offset-focus: 2px;
+}
