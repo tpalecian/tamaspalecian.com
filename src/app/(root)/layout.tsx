@@ -1,3 +1,3 @@
 export default function Layout({ children }) {
-  return <main className="min-h-dvh">{children}</main>
+  return <div className="min-h-dvh">{children}</div>
 }

@@ -2,6 +2,7 @@
 
 import { type LenisRef, ReactLenis } from 'lenis/react'
 import { cancelFrame, frame } from 'motion-dom'
+import { usePathname } from 'next/navigation'
 import { type ReactNode, useEffect, useRef } from 'react'
 
 type SmoothScrollProviderProps = {
@@ -14,6 +15,7 @@ type SmoothScrollProviderProps = {
  */
 export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   const lenisRef = useRef<LenisRef>(null)
+  const pathname = usePathname()
 
   useEffect(() => {
     function update({ timestamp }: { timestamp: number }) {
@@ -25,8 +27,21 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
     return () => cancelFrame(update)
   }, [])
 
+  useEffect(() => {
+    const lenis = lenisRef.current?.lenis
+    if (!lenis) return
+
+    lenis.resize()
+
+    const resize = () => lenis.resize()
+    const observer = new ResizeObserver(resize)
+    observer.observe(document.documentElement)
+
+    return () => observer.disconnect()
+  }, [pathname])
+
   return (
-    <ReactLenis ref={lenisRef} root options={{ autoRaf: false }}>
+    <ReactLenis ref={lenisRef} root options={{ autoRaf: false, autoResize: true }}>
       {children}
     </ReactLenis>
   )

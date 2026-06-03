@@ -58,8 +58,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="h-full">
-      <body className={cn('h-full font-sans', inter.variable)}>
+    <html lang="en">
+      <body className={cn('min-h-dvh font-sans', inter.variable)}>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
         <Analytics />
         <BreakpointsIndicator />

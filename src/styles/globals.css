@@ -9,7 +9,6 @@
 
 @layer base {
   html {
-    @apply scroll-smooth;
     background-color: var(--color-background);
   }
 
