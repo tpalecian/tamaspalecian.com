@@ -1,5 +1,5 @@
 {
-  "name": "@repo/smooth-scroll",
+  "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
@@ -7,6 +7,7 @@
   ],
   "exports": {
     ".": "./src/smooth-scroll-provider.tsx",
+    "./smooth-scroll": "./src/smooth-scroll-provider.tsx",
     "./lenis-route-sync": "./src/lenis-route-sync.tsx"
   },
   "scripts": {

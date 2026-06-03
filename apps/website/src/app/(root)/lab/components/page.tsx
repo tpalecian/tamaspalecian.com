@@ -37,7 +37,7 @@ const layoutComponents: ComponentEntry[] = [
 const infrastructure: ComponentEntry[] = [
   {
     name: 'SmoothScrollProvider',
-    path: 'packages/smooth-scroll/src/smooth-scroll-provider.tsx',
+    path: 'packages/ui/src/smooth-scroll-provider.tsx',
     description: 'Wraps the app with Lenis for inertia scrolling site-wide.',
     props: ['children'],
     usedOn: 'Root layout',

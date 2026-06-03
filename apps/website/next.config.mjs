@@ -12,7 +12,7 @@ const _contentSecurityPolicy = `
 /** @type { import('next').NextConfig } */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@repo/cms', '@repo/shared', '@repo/smooth-scroll'],
+  transpilePackages: ['@repo/cms', '@repo/ui', '@repo/utilities'],
   cacheComponents: true,
 
   images: {
