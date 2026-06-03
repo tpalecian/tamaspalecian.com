@@ -8,7 +8,8 @@
   "files": {
     "ignoreUnknown": false,
     "includes": [
-      "**",
+      "apps/**",
+      "packages/**",
       "!!**/.next",
       "!!**/dist",
       "!!**/.cache",

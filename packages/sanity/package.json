@@ -1,0 +1,38 @@
+{
+  "name": "@repo/sanity",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./env": "./src/env.ts",
+    "./live": "./src/live.ts",
+    "./queries": "./src/queries.ts",
+    "./schemas": "./src/schemas/index.ts",
+    "./config": "./src/sanity.config.ts",
+    "./cli": "./src/sanity.cli.ts"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "sanity:typegen": "sanity typegen generate"
+  },
+  "dependencies": {
+    "@sanity/image-url": "^2.1.1",
+    "groq": "^5.28.0",
+    "next-sanity": "^13.0.8",
+    "sanity": "^5.28.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@sanity/vision": "^5.28.0",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "next": ">=15",
+    "react": ">=19"
+  }
+}
