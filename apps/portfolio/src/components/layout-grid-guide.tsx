@@ -1,4 +1,4 @@
-import { cn } from '@repo/ui/cn'
+import { cn } from '@repo/shared/cn'
 import type { CSSProperties } from 'react'
 
 function columnTrackKey(total: number, offset: number) {

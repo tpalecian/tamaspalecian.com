@@ -3,7 +3,7 @@ import {
   type Project,
   projectQuery,
   sanityFetch,
-} from '@repo/sanity'
+} from '@repo/cms'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 

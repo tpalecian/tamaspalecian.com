@@ -1,5 +1,5 @@
 {
-  "name": "studio",
+  "name": "@repo/sanity-studio",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -11,14 +11,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/sanity": "workspace:*",
+    "@repo/cms": "workspace:*",
     "@sanity/vision": "^5.28.0",
     "react": "19.2.5",
     "react-dom": "19.2.5",
     "sanity": "^5.28.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@repo/tsconfig": "workspace:*",
     "@types/react": "19.2.14",
     "typescript": "^6.0.3"
   }
