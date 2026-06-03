@@ -41,7 +41,7 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   }, [pathname])
 
   return (
-    <ReactLenis ref={lenisRef} root options={{ autoRaf: false, autoResize: true }}>
+    <ReactLenis ref={lenisRef} root options={{ autoRaf: false }}>
       {children}
     </ReactLenis>
   )
