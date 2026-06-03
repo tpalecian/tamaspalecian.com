@@ -20,6 +20,9 @@ const swatches = [
   'ring',
   'grid-line',
   'construction-stroke',
+  'destructive',
+  'destructive-foreground',
+  'success',
 ] as const
 
 const warmSwatches: { step: string; className: string }[] = [
