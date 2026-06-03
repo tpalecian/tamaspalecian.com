@@ -1,9 +1,13 @@
 {
   "extends": "@repo/tsconfig/nextjs.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/styles/*": ["./src/styles/*"],
       "@public/*": ["./public/*"]
     },
     "plugins": [{ "name": "next" }]

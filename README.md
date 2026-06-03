@@ -20,6 +20,20 @@ packages/
 
 Studio config (`sanity.config.ts`, `sanity.cli.ts`) lives in **`apps/studio`**. `@repo/cms` is only the portable data layer.
 
+### TypeScript path aliases
+
+Both apps define `paths` in their local `tsconfig.json` (resolved from each app root):
+
+| Alias | `apps/website` | `apps/studio` |
+|-------|----------------|---------------|
+| `@/*` | `./src/*` | `./src/*` |
+| `@/components/*` | `./src/components/*` | — |
+| `@/lib/*` | `./src/lib/*` | `./src/lib/*` |
+| `@/styles/*` | `./src/styles/*` | — |
+| `@public/*` | `./public/*` | — |
+
+Example: `import { cn } from '@repo/utilities/cn'` (workspace package) and `import { Analytics } from '@/components/analytics'` (app alias).
+
 ## Setup
 
 ```bash
