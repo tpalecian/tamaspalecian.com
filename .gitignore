@@ -28,6 +28,9 @@ yarn-error.log*
 # turbo
 .turbo
 
+# typescript
+*.tsbuildinfo
+
 # other configuration files
 .contentlayer
 .env
