@@ -1,41 +1,36 @@
 /**
  * Semantic tokens — role-based colors and effects.
- * Values use light-dark() and follow the user’s preferred color scheme.
+ * Light values are the default fallback (Safari < 17.5). Browsers with
+ * light-dark() support override via @supports below.
  */
 @theme inline {
   /* Surfaces */
-  --color-background: light-dark(#f3f0e8, #141210);
-  --color-foreground: light-dark(#161412, #ebe8e3);
-  --color-muted: light-dark(#58544d, #9b948a);
-  --color-muted-foreground: light-dark(#6e6962, #b5aea4);
-  --color-surface-elevated: light-dark(#faf7f0, #1f1c19);
-  --color-surface-sunken: light-dark(#ebe6dc, #0f0d0b);
+  --color-background: #f3f0e8;
+  --color-foreground: #161412;
+  --color-muted: #58544d;
+  --color-muted-foreground: #6e6962;
+  --color-surface-elevated: #faf7f0;
+  --color-surface-sunken: #ebe6dc;
 
   /* Borders & guides */
-  --color-border: light-dark(#d4cfc4, #35302b);
-  --color-border-subtle: light-dark(#e1ddd4, #2a2622);
-  --color-grid-line: light-dark(#aea69a, #524a42);
-  --color-construction-stroke: light-dark(#524a42, #a39a8f);
+  --color-border: #d4cfc4;
+  --color-border-subtle: #e1ddd4;
+  --color-grid-line: #aea69a;
+  --color-construction-stroke: #524a42;
 
   /* Accent */
-  --color-accent: light-dark(#c2560e, #eab308);
-  --color-accent-foreground: light-dark(#fffaf5, #141210);
-  --color-accent-muted: light-dark(
-    color-mix(in srgb, var(--color-accent) 14%, transparent),
-    color-mix(in srgb, var(--color-accent) 18%, transparent)
-  );
-  --color-ring: light-dark(
-    color-mix(in srgb, var(--color-accent) 26%, transparent),
-    color-mix(in srgb, var(--color-accent) 28%, transparent)
-  );
+  --color-accent: #c2560e;
+  --color-accent-foreground: #fffaf5;
+  --color-accent-muted: color-mix(in srgb, #c2560e 14%, transparent);
+  --color-ring: color-mix(in srgb, #c2560e 26%, transparent);
 
-  /* Feedback (reserved for forms / status) */
-  --color-destructive: light-dark(#b42318, #f87171);
-  --color-destructive-foreground: light-dark(#fffaf5, #141210);
-  --color-success: light-dark(#15803d, #4ade80);
+  /* Feedback */
+  --color-destructive: #b42318;
+  --color-destructive-foreground: #fffaf5;
+  --color-success: #15803d;
 
   /* Effects */
-  --color-shadow: light-dark(rgb(22 20 17 / 0.08), rgb(0 0 0 / 0.42));
+  --color-shadow: rgb(22 20 17 / 0.08);
   --shadow-xs: 0 1px 2px var(--color-shadow);
   --shadow-sm: 0 1px 3px var(--color-shadow), 0 2px 6px var(--color-shadow);
   --shadow-md: 0 2px 4px var(--color-shadow), 0 8px 20px var(--color-shadow);
@@ -46,4 +41,37 @@
   /* Focus */
   --outline-width-focus: 2px;
   --outline-offset-focus: 2px;
+}
+
+@supports (color: light-dark(black, white)) {
+  @theme inline {
+    --color-background: light-dark(#f3f0e8, #141210);
+    --color-foreground: light-dark(#161412, #ebe8e3);
+    --color-muted: light-dark(#58544d, #9b948a);
+    --color-muted-foreground: light-dark(#6e6962, #b5aea4);
+    --color-surface-elevated: light-dark(#faf7f0, #1f1c19);
+    --color-surface-sunken: light-dark(#ebe6dc, #0f0d0b);
+
+    --color-border: light-dark(#d4cfc4, #35302b);
+    --color-border-subtle: light-dark(#e1ddd4, #2a2622);
+    --color-grid-line: light-dark(#aea69a, #524a42);
+    --color-construction-stroke: light-dark(#524a42, #a39a8f);
+
+    --color-accent: light-dark(#c2560e, #eab308);
+    --color-accent-foreground: light-dark(#fffaf5, #141210);
+    --color-accent-muted: light-dark(
+      color-mix(in srgb, var(--color-accent) 14%, transparent),
+      color-mix(in srgb, var(--color-accent) 18%, transparent)
+    );
+    --color-ring: light-dark(
+      color-mix(in srgb, var(--color-accent) 26%, transparent),
+      color-mix(in srgb, var(--color-accent) 28%, transparent)
+    );
+
+    --color-destructive: light-dark(#b42318, #f87171);
+    --color-destructive-foreground: light-dark(#fffaf5, #141210);
+    --color-success: light-dark(#15803d, #4ade80);
+
+    --color-shadow: light-dark(rgb(22 20 17 / 0.08), rgb(0 0 0 / 0.42));
+  }
 }
