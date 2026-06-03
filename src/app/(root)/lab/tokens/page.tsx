@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Design tokens',
@@ -82,7 +83,14 @@ export default function TokensLabPage() {
         </h1>
         <p className="mt-stack text-body-lg text-muted">
           Semantic colors, primitives, and typography for Tailwind CSS 4. Colors
-          follow your system light or dark preference via light-dark().
+          follow your system light or dark preference via light-dark(). See also{' '}
+          <Link
+            href="/lab/components"
+            className="text-accent underline-offset-2 hover:underline"
+          >
+            portfolio components
+          </Link>
+          .
         </p>
       </header>
 

@@ -55,17 +55,5 @@
     "parser": {
       "tailwindDirectives": true
     }
-  },
-  "overrides": [
-    {
-      "includes": ["src/lib/column-shift-gl.ts"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "useHookAtTopLevel": "off"
-          }
-        }
-      }
-    }
-  ]
+  }
 }
