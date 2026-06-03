@@ -24,7 +24,7 @@
   }
 
   :focus-visible {
-    outline: var(--outline-width-focus) solid var(--color-ring);
+    outline: var(--outline-width-focus) solid var(--color-accent);
     outline-offset: var(--outline-offset-focus);
   }
 }
