@@ -10,8 +10,8 @@
     "lint:fix": "turbo lint:fix",
     "format": "biome format --write .",
     "typecheck": "turbo typecheck",
-    "dev:portfolio": "turbo dev --filter=@repo/portfolio",
-    "dev:sanity-studio": "turbo dev --filter=@repo/sanity-studio",
+    "dev:website": "turbo dev --filter=@repo/website",
+    "dev:studio": "turbo dev --filter=@repo/studio",
     "cms:typegen": "turbo typegen --filter=@repo/cms"
   },
   "devDependencies": {

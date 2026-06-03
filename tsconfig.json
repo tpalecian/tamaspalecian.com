@@ -2,8 +2,8 @@
   "extends": "@repo/tsconfig/base.json",
   "files": [],
   "references": [
-    { "path": "apps/portfolio" },
-    { "path": "apps/sanity-studio" },
+    { "path": "apps/website" },
+    { "path": "apps/studio" },
     { "path": "packages/cms" },
     { "path": "packages/shared" },
     { "path": "packages/smooth-scroll" }
