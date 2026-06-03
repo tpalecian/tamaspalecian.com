@@ -1,7 +1,13 @@
 {
   "extends": "@repo/tsconfig/base.json",
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/lib/*": ["./src/lib/*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]
