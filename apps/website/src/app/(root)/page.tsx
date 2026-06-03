@@ -1,9 +1,10 @@
 import { ParallaxSection } from '@/components/effects/parallax-section'
+import { PageIntro } from '@/components/intro/page-intro'
 import { LayoutGridGuide } from '@/components/layout-grid-guide'
 
 export default function Page() {
   return (
-    <>
+    <PageIntro>
       <ParallaxSection className="min-h-[40vh]">
         <div className="mx-auto max-w-3xl px-6 pt-24">
           <p className="text-caption text-muted-foreground">Portfolio</p>
@@ -17,6 +18,6 @@ export default function Page() {
         </div>
       </ParallaxSection>
       <LayoutGridGuide />
-    </>
+    </PageIntro>
   )
 }
