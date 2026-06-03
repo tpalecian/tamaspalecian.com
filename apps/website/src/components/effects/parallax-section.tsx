@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@repo/shared/cn'
+import { cn } from '@repo/utilities/cn'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 

@@ -13,8 +13,8 @@
   "dependencies": {
     "@portabletext/react": "^6.2.0",
     "@repo/cms": "workspace:*",
-    "@repo/shared": "workspace:*",
-    "@repo/smooth-scroll": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "@repo/utilities": "workspace:*",
     "@sanity/image-url": "^2.1.1",
     "@vercel/analytics": "^2.0.1",
     "motion": "^12.38.0",

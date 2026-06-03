@@ -5,7 +5,7 @@
     { "path": "apps/website" },
     { "path": "apps/studio" },
     { "path": "packages/cms" },
-    { "path": "packages/shared" },
-    { "path": "packages/smooth-scroll" }
+    { "path": "packages/ui" },
+    { "path": "packages/utilities" }
   ]
 }

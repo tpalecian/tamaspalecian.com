@@ -13,12 +13,12 @@ apps/
 
 packages/
   cms/                 @repo/cms              Schemas, client, GROQ, live preview
-  smooth-scroll/       @repo/smooth-scroll    Lenis + motion-dom frame sync
-  shared/              @repo/shared           Shared utilities (cn)
+  ui/                  @repo/ui               UI primitives (Lenis smooth scroll, etc.)
+  utilities/           @repo/utilities        Shared helpers (cn)
   tsconfig/            @repo/tsconfig         TypeScript configs
 ```
 
-Studio config (`sanity.config.ts`, `sanity.cli.ts`) lives in **`apps/studio`** — the CMS package only holds portable data-layer code.
+Studio config (`sanity.config.ts`, `sanity.cli.ts`) lives in **`apps/studio`**. `@repo/cms` is only the portable data layer.
 
 ## Setup
 
@@ -44,4 +44,4 @@ pnpm cms:typegen
 
 ## Motion + Lenis
 
-`@repo/smooth-scroll` runs Lenis on the same `motion-dom` frame as Motion (`useScroll`, `useTransform`). See `apps/website/src/components/effects/parallax-section.tsx`.
+`SmoothScrollProvider` from `@repo/ui` runs Lenis on the same `motion-dom` frame as Motion (`useScroll`, `useTransform`). See `apps/website/src/components/effects/parallax-section.tsx`.

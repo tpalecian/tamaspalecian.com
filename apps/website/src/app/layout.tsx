@@ -5,8 +5,8 @@ import type { ReactNode } from 'react'
 import '@/styles/globals.css'
 
 import { SanityLive } from '@repo/cms/live'
-import { cn } from '@repo/shared/cn'
-import { SmoothScrollProvider } from '@repo/smooth-scroll'
+import { SmoothScrollProvider } from '@repo/ui'
+import { cn } from '@repo/utilities/cn'
 import { Analytics } from '@/components/analytics'
 import { BreakpointsIndicator } from '@/components/breakpoints-indicator'
 
