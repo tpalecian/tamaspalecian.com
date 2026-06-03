@@ -1,5 +1,5 @@
 {
-  "name": "@repo/sanity",
+  "name": "@repo/cms",
   "version": "0.0.0",
   "private": true,
   "sideEffects": false,
@@ -9,15 +9,13 @@
     "./env": "./src/env.ts",
     "./live": "./src/live.ts",
     "./queries": "./src/queries.ts",
-    "./schemas": "./src/schemas/index.ts",
-    "./config": "./src/sanity.config.ts",
-    "./cli": "./src/sanity.cli.ts"
+    "./schemas": "./src/schemas/index.ts"
   },
   "scripts": {
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit",
-    "sanity:typegen": "sanity typegen generate"
+    "typegen": "sanity typegen generate"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
@@ -27,8 +25,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@sanity/vision": "^5.28.0",
+    "@repo/tsconfig": "workspace:*",
     "typescript": "^6.0.3"
   },
   "peerDependencies": {

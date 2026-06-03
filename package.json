@@ -10,9 +10,9 @@
     "lint:fix": "turbo lint:fix",
     "format": "biome format --write .",
     "typecheck": "turbo typecheck",
-    "dev:portfolio": "turbo dev --filter=portfolio",
-    "dev:studio": "turbo dev --filter=studio",
-    "sanity:typegen": "turbo sanity:typegen --filter=@repo/sanity"
+    "dev:portfolio": "turbo dev --filter=@repo/portfolio",
+    "dev:sanity-studio": "turbo dev --filter=@repo/sanity-studio",
+    "cms:typegen": "turbo typegen --filter=@repo/cms"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",

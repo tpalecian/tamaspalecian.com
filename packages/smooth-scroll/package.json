@@ -1,13 +1,12 @@
 {
-  "name": "@repo/ui",
+  "name": "@repo/smooth-scroll",
   "version": "0.0.0",
   "private": true,
   "sideEffects": [
     "*.css"
   ],
   "exports": {
-    "./cn": "./src/cn.ts",
-    "./smooth-scroll": "./src/smooth-scroll-provider.tsx",
+    ".": "./src/smooth-scroll-provider.tsx",
     "./lenis-route-sync": "./src/lenis-route-sync.tsx"
   },
   "scripts": {
@@ -16,13 +15,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
     "lenis": "^1.3.23",
-    "motion-dom": "12.38.0",
-    "tailwind-merge": "^3.5.0"
+    "motion-dom": "12.38.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@repo/tsconfig": "workspace:*",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "react": "19.2.5",

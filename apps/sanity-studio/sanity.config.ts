@@ -1,3 +1,4 @@
+import { apiVersion, dataset, previewURL, projectId, schema } from '@repo/cms'
 import { visionTool } from '@sanity/vision'
 import { defineConfig } from 'sanity'
 import {
@@ -6,8 +7,6 @@ import {
   presentationTool,
 } from 'sanity/presentation'
 import { structureTool } from 'sanity/structure'
-import { apiVersion, dataset, previewURL, projectId } from './env'
-import { schema } from './schemas'
 
 function resolveHref(documentType?: string, slug?: string): string | undefined {
   switch (documentType) {
@@ -43,25 +42,23 @@ export default defineConfig({
         locations: {
           page: defineLocations({
             select: { title: 'title', slug: 'slug.current' },
-            resolve: (doc) => ({
-              locations: [
-                {
-                  title: doc?.title ?? 'Page',
-                  href: resolveHref('page', doc?.slug)!,
-                },
-              ],
-            }),
+            resolve: (doc) => {
+              const href = resolveHref('page', doc?.slug)
+              return {
+                locations: href ? [{ title: doc?.title ?? 'Page', href }] : [],
+              }
+            },
           }),
           project: defineLocations({
             select: { title: 'title', slug: 'slug.current' },
-            resolve: (doc) => ({
-              locations: [
-                {
-                  title: doc?.title ?? 'Project',
-                  href: resolveHref('project', doc?.slug)!,
-                },
-              ],
-            }),
+            resolve: (doc) => {
+              const href = resolveHref('project', doc?.slug)
+              return {
+                locations: href
+                  ? [{ title: doc?.title ?? 'Project', href }]
+                  : [],
+              }
+            },
           }),
         },
       },

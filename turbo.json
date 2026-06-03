@@ -20,7 +20,7 @@
     "typecheck": {
       "dependsOn": ["^typecheck"]
     },
-    "sanity:typegen": {
+    "typegen": {
       "cache": false
     }
   }

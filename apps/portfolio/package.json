@@ -1,5 +1,5 @@
 {
-  "name": "portfolio",
+  "name": "@repo/portfolio",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -12,20 +12,19 @@
   },
   "dependencies": {
     "@portabletext/react": "^6.2.0",
-    "@repo/sanity": "workspace:*",
-    "@repo/ui": "workspace:*",
+    "@repo/cms": "workspace:*",
+    "@repo/shared": "workspace:*",
+    "@repo/smooth-scroll": "workspace:*",
     "@sanity/image-url": "^2.1.1",
     "@vercel/analytics": "^2.0.1",
-    "lenis": "^1.3.23",
     "motion": "^12.38.0",
-    "motion-dom": "12.38.0",
     "next": "16.2.4",
     "next-sanity": "^13.0.8",
     "react": "19.2.5",
     "react-dom": "19.2.5"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@repo/tsconfig": "workspace:*",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.6.0",
     "@types/react": "19.2.14",

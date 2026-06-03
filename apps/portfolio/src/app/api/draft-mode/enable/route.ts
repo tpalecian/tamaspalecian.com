@@ -1,5 +1,5 @@
-import { client } from '@repo/sanity/client'
-import { isSanityConfigured, privateToken } from '@repo/sanity/env'
+import { client } from '@repo/cms/client'
+import { isSanityConfigured, privateToken } from '@repo/cms/env'
 import { NextResponse } from 'next/server'
 import { defineEnableDraftMode } from 'next-sanity/draft-mode'
 
