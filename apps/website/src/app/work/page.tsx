@@ -27,7 +27,7 @@ async function WorkContent() {
         <h1 className="font-semibold text-display">Work</h1>
         <p className="mt-4 text-muted-foreground">
           Configure Sanity env vars to load projects from the CMS. Run{' '}
-          <code className="text-sm">pnpm dev:sanity-studio</code> to manage
+          <code className="text-sm">pnpm dev:studio</code> to manage
           content.
         </p>
       </main>
