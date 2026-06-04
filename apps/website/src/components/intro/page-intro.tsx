@@ -9,10 +9,11 @@ import {
   useLayoutEffect,
   useState,
 } from 'react'
-import { IntroTypewriter } from './intro-typewriter'
+import { IntroCopy } from './intro-copy'
 
 const SESSION_KEY = 'portfolio-intro-seen'
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
+const HOLD_AFTER_ENTER_MS = 1200
 
 /** Fully visible. */
 const CLIP_OPEN = 'inset(0% 0% 0% 0%)'
@@ -55,9 +56,19 @@ export function PageIntro({ children, className }: PageIntroProps) {
     document.documentElement.classList.remove('lenis-stopped')
   }, [showOverlay])
 
-  const handleTypewriterComplete = useCallback(() => {
-    setPhase('reveal')
-  }, [])
+  useEffect(() => {
+    if (phase !== 'intro' || motionDisabled) {
+      return
+    }
+
+    const enterDurationMs = 900
+    const timer = setTimeout(
+      () => setPhase('reveal'),
+      enterDurationMs + HOLD_AFTER_ENTER_MS
+    )
+
+    return () => clearTimeout(timer)
+  }, [phase, motionDisabled])
 
   const finishIntro = useCallback(() => {
     sessionStorage.setItem(SESSION_KEY, '1')
@@ -119,10 +130,7 @@ export function PageIntro({ children, className }: PageIntroProps) {
                 delay: motionDisabled ? 0 : 0.1,
               }}
             >
-              <IntroTypewriter
-                enabled={phase === 'intro' && !motionDisabled}
-                onComplete={handleTypewriterComplete}
-              />
+              <IntroCopy />
             </motion.div>
           </div>
         </motion.div>
