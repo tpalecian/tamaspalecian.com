@@ -1,0 +1,61 @@
+/**
+ * Homepage intro — CSS-only enter (fade + mask) and exit (bottom-to-top wipe).
+ * Timings: 0.1s delay + 0.8s text in → 1.2s hold → 1s overlay out ≈ 3.1s total.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html:has([data-page-intro]) {
+    animation: intro-scroll-lock 3.15s forwards;
+  }
+
+  [data-page-intro] {
+    clip-path: inset(0% 0% 0% 0%);
+    animation: intro-overlay-out 1s var(--ease-portfolio) 2.1s forwards;
+  }
+
+  [data-page-intro] .intro-text {
+    animation: intro-text-in 0.8s var(--ease-portfolio) 0.1s both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-page-intro] {
+    display: none;
+  }
+}
+
+@keyframes intro-scroll-lock {
+  0%,
+  99% {
+    overflow: hidden;
+  }
+
+  100% {
+    overflow: auto;
+  }
+}
+
+@keyframes intro-text-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    clip-path: inset(100% 0% 0% 0%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0% 0% 0% 0%);
+  }
+}
+
+@keyframes intro-overlay-out {
+  from {
+    clip-path: inset(0% 0% 0% 0%);
+  }
+
+  to {
+    clip-path: inset(0% 0% 100% 0%);
+    pointer-events: none;
+    visibility: hidden;
+  }
+}
