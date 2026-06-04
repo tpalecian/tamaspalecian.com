@@ -8,7 +8,7 @@ export function IntroCopy({ className }: IntroCopyProps) {
   return (
     <div
       className={cn(
-        'font-regular font-sans text-muted-foreground text-title leading-snug tracking-tight',
+        'font-regular font-sans text-huge text-muted-foreground tracking-tight',
         className
       )}
     >

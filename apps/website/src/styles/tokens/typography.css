@@ -10,6 +10,18 @@
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
 
+  /* Fluid clamp scale — intro & display-adjacent sizes */
+  --text-huge: clamp(2.25rem, 5.14vw, 5.14vw);
+  --text-huge--line-height: 1.15;
+  --text-huge--letter-spacing: -0.02em;
+
+  --text-large: clamp(1.625rem, 1.81vw, 1.81vw);
+  --text-large--line-height: 1.2;
+  --text-large--letter-spacing: -0.02em;
+
+  --text-medium: 1.625rem;
+  --text-medium--line-height: 1.25;
+
   --text-display: clamp(2.75rem, 6vw + 1rem, 5.5rem);
   --text-display--line-height: 0.95;
   --text-display--letter-spacing: -0.04em;

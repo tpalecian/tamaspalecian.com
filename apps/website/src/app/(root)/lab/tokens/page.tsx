@@ -42,6 +42,15 @@ const warmSwatches: { step: string; className: string }[] = [
 
 const typeSamples = [
   {
+    label: 'Huge',
+    className: 'text-huge font-regular tracking-tight text-muted',
+  },
+  {
+    label: 'Large',
+    className: 'text-large font-regular tracking-tight text-muted',
+  },
+  { label: 'Medium', className: 'text-medium text-muted' },
+  {
     label: 'Display',
     className: 'text-display font-semibold tracking-tighter',
   },
