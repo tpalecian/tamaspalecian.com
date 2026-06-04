@@ -17,7 +17,10 @@ const inter = Inter({
   subsets: ['latin'],
 })
 
+const siteUrl = 'https://tamaspalecian.com'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'Tamas Palecian',
     template: '%s | Tamas Palecian',
@@ -26,11 +29,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Tamas Palecian',
     description: 'React Developer, designer, and open source enthusiast.',
-    url: 'https://tamaspalecian.com',
+    url: siteUrl,
     siteName: 'Tamas Palecian',
     images: [
       {
-        url: 'https://tamaspalecian.com/og.jpg',
+        url: '/og.jpg',
         width: 1920,
         height: 1080,
       },
