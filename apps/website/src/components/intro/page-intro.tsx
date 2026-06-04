@@ -11,7 +11,6 @@ import {
 } from 'react'
 import { IntroCopy } from './intro-copy'
 
-const SESSION_KEY = 'portfolio-intro-seen'
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 const HOLD_AFTER_ENTER_MS = 1200
 
@@ -35,10 +34,6 @@ export function PageIntro({ children, className }: PageIntroProps) {
 
   useLayoutEffect(() => {
     if (prefersReducedMotion) {
-      setPhase('done')
-      return
-    }
-    if (sessionStorage.getItem(SESSION_KEY) === '1') {
       setPhase('done')
     }
   }, [prefersReducedMotion])
@@ -71,7 +66,6 @@ export function PageIntro({ children, className }: PageIntroProps) {
   }, [phase, motionDisabled])
 
   const finishIntro = useCallback(() => {
-    sessionStorage.setItem(SESSION_KEY, '1')
     setPhase('done')
   }, [])
 
