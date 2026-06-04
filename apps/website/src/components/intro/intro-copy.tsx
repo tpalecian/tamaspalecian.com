@@ -10,7 +10,7 @@ type IntroCopyProps = {
 export function IntroCopy({ className }: IntroCopyProps) {
   return (
     <div className={cn(className)}>
-      <p className={introLineClass}>Tamas Palecian</p>
+      <p className={cn(introLineClass, 'whitespace-nowrap')}>Tamas Palecian</p>
       <p className={cn(introLineClass, 'mt-1')}>—Technical Lead</p>
     </div>
   )
