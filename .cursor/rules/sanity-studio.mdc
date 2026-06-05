@@ -1,0 +1,43 @@
+---
+description: Sanity Studio configuration, presentation tool, and draft mode
+globs: apps/studio/**
+alwaysApply: false
+---
+
+# Studio (`apps/studio`)
+
+Sanity Studio shell — config, plugins, and presentation tooling. Schemas live in `@repo/cms`.
+
+## Config location
+
+- `sanity.config.ts` — main Studio config
+- `sanity.cli.ts` — CLI/deploy config
+- `src/lib/presentation.ts` — location resolvers for visual editing
+- `src/lib/resolve-href.ts` — preview URL mapping
+
+## Plugins
+
+- `structureTool` — default document structure
+- `visionTool` — GROQ playground
+- `presentationTool` — live preview against `localhost:3000`
+
+When adding new document types, update presentation location resolvers so visual editing routes resolve correctly.
+
+## Draft mode
+
+Website draft routes live in `apps/website/src/app/api/draft-mode/`. Studio presentation depends on these — keep preview URLs in sync.
+
+## Path aliases
+
+| Alias | Path |
+|-------|------|
+| `@/*` | `./src/*` |
+| `@/lib/*` | `./src/lib/*` |
+
+## Imports from CMS
+
+```ts
+import { schemaTypes } from '@repo/cms/schemas'
+```
+
+Do not duplicate schema definitions in the studio app.

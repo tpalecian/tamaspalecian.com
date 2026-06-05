@@ -1,0 +1,43 @@
+---
+description: TypeScript conventions across the monorepo
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# TypeScript
+
+## Naming
+
+| Kind | Convention | Example |
+|------|------------|---------|
+| Files | kebab-case | `parallax-section.tsx` |
+| Components | PascalCase | `ParallaxSection` |
+| Functions/vars | camelCase | `sanityFetch` |
+| Types | PascalCase | `ProjectProps` |
+| Workspace packages | kebab-case | `@repo/cms` |
+
+## Types
+
+- Prefer `type` for props and simple unions; `interface` when extending is needed.
+- Import types with `import type { ... }`.
+- No `any` — use `unknown` + narrowing, or generated Sanity types.
+- After CMS changes, use `pnpm cms:typegen` types instead of manual casts.
+
+## React props
+
+```ts
+type ParallaxSectionProps = {
+  children: ReactNode
+  className?: string
+}
+
+export function ParallaxSection({ children, className }: ParallaxSectionProps) {
+```
+
+## Config inheritance
+
+Apps extend `@repo/tsconfig/nextjs.json`. Shared base in `packages/tsconfig/base.json`.
+
+## Strictness
+
+`strict: true` everywhere. Do not disable strict checks to pass builds.

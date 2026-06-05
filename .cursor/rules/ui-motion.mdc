@@ -1,0 +1,47 @@
+---
+description: Lenis smooth scroll, Motion animation, and reduced-motion patterns
+globs: packages/ui/**,apps/website/src/components/effects/**
+alwaysApply: false
+---
+
+# UI and motion
+
+## Lenis (`@repo/ui`)
+
+`SmoothScrollProvider` drives Lenis via `motion-dom`'s shared rAF — do not enable Lenis `autoRaf`.
+
+```ts
+// packages/ui/src/smooth-scroll-provider.tsx pattern
+options={{ autoRaf: false, lerp: 0.125, anchors: true, autoToggle: true }}
+frame.update(update, true) // sync with Motion
+```
+
+- `LenisRouteSync` calls `lenis.resize()` on pathname change.
+- Mount `SmoothScrollProvider` once in root layout — not per-page.
+
+## Motion
+
+Import from `motion/react` (not `framer-motion`).
+
+```ts
+import { motion, useScroll, useTransform } from 'motion/react'
+```
+
+`useScroll` + `useTransform` pair with Lenis because both share the `motion-dom` frame. See `parallax-section.tsx` for the reference pattern.
+
+Keep `motion-dom` version aligned with `motion` — both are pinned in `@repo/ui`.
+
+## Reduced motion
+
+Respect `prefers-reduced-motion: reduce`:
+- Hide or skip decorative animations (see `intro.css` pattern).
+- Do not force scroll smoothing or parallax when reduced motion is preferred.
+- Provide skip controls for long entrance animations.
+
+## CSS-only animation
+
+Prefer CSS keyframes from `src/styles/tokens/motion.css` for simple transitions. Reserve Motion for scroll-linked transforms.
+
+## Client boundary
+
+All Motion and Lenis components require `'use client'`. Keep animation logic in `components/effects/` or `@repo/ui`.
