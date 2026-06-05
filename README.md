@@ -59,3 +59,7 @@ pnpm cms:typegen
 ## Motion + Lenis
 
 `SmoothScrollProvider` from `@repo/ui` runs Lenis on the same `motion-dom` frame as Motion (`useScroll`, `useTransform`). See `apps/website/src/components/effects/parallax-section.tsx`.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for branch naming, conventional commits, and the PR-only workflow for `main`.
