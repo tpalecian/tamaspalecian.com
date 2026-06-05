@@ -1,0 +1,62 @@
+---
+description: Next.js 16 App Router patterns for the portfolio website
+globs: apps/website/**
+alwaysApply: false
+---
+
+# Website (`apps/website`)
+
+## Rendering
+
+- **Server Components by default.** Add `'use client'` only for hooks, browser APIs, Motion, or event handlers.
+- Wrap async server data in `<Suspense>` with skeleton fallbacks.
+- Use `notFound()` for missing CMS content after `sanityFetch`.
+
+## Data fetching
+
+```ts
+import { sanityFetch } from '@repo/cms'
+import { projectQuery } from '@repo/cms/queries'
+
+const { data } = await sanityFetch({
+  query: projectQuery,
+  params: { slug },
+})
+```
+
+Guard with `isSanityConfigured()` from `@repo/cms/env` when Sanity may be unconfigured locally.
+
+## Path aliases
+
+| Alias | Path |
+|-------|------|
+| `@/*` | `./src/*` |
+| `@/components/*` | `./src/components/*` |
+| `@/lib/*` | `./src/lib/*` |
+| `@/styles/*` | `./src/styles/*` |
+
+## Styling
+
+- Tailwind v4 with CSS-first tokens in `src/styles/tokens/` (`primitives`, `semantic`, `typography`, `layout`, `motion`).
+- Use `cn()` from `@repo/utilities/cn` for conditional classes.
+- Biome enforces sorted Tailwind classes (`useSortedClasses: error`).
+- Runtime color reads: `src/lib/design-tokens.ts`.
+
+## Layout stack
+
+Root layout wraps children with `SmoothScrollProvider` (from `@repo/ui`) and mounts `SanityLive` for visual editing.
+
+## Next.js config notes
+
+- `cacheComponents: true` — respect Next 16 cache component patterns.
+- `transpilePackages: ['@repo/cms', '@repo/ui', '@repo/utilities']`.
+- Security headers are set in `next.config.mjs` — do not weaken CSP/HSTS without explicit request.
+- Sanity images: `cdn.sanity.io` is allowlisted.
+
+## SEO and metadata
+
+Use `generateMetadata` for dynamic pages. Keep `metadataBase` in root layout. Update `sitemap.ts` when adding new public routes.
+
+## Portable Text
+
+Use `@portabletext/react` for CMS rich text (`body` fields). Do not render raw block arrays as JSON.
