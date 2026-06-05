@@ -12,10 +12,14 @@
     "typecheck": "turbo typecheck",
     "dev:website": "turbo dev --filter=@repo/website",
     "dev:studio": "turbo dev --filter=@repo/studio",
-    "cms:typegen": "turbo typegen --filter=@repo/cms"
+    "cms:typegen": "turbo typegen --filter=@repo/cms",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "husky": "^9.1.7",
     "turbo": "^2.8.12",
     "typescript": "^6.0.3"
   },
