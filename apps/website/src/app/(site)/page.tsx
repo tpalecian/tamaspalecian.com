@@ -1,6 +1,6 @@
 import { ParallaxSection } from '@/components/effects/parallax-section'
 import { PageIntro } from '@/components/intro/page-intro'
-import { LayoutGridGuide } from '@/components/layout-grid-guide'
+import { LayoutGridGuide } from '@/components/layout/layout-grid-guide'
 
 export default function Page() {
   return (
