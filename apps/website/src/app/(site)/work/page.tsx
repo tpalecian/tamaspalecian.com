@@ -4,8 +4,9 @@ import {
   type ProjectSummary,
   sanityFetch,
 } from '@repo/cms'
-import Link from 'next/link'
 import { Suspense } from 'react'
+
+import { Link } from '@/components/ui/link'
 
 function WorkFallback() {
   return (
@@ -27,8 +28,7 @@ async function WorkContent() {
         <h1 className="font-semibold text-display">Work</h1>
         <p className="mt-4 text-muted-foreground">
           Configure Sanity env vars to load projects from the CMS. Run{' '}
-          <code className="text-sm">pnpm dev:studio</code> to manage
-          content.
+          <code className="text-sm">pnpm dev:studio</code> to manage content.
         </p>
       </main>
     )

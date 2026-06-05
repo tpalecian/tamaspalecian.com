@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Link } from '@/components/ui/link'
+import { createPageMetadata } from '@/lib/seo/metadata'
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Design tokens',
-  robots: { index: false, follow: false },
-}
+  noIndex: true,
+})
 
 const swatches = [
   'background',

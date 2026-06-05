@@ -7,6 +7,8 @@ import {
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
+import { CmsPortableText } from '@/components/cms/portable-text'
+
 type PageProps = {
   params: Promise<{ slug: string }>
 }
@@ -48,6 +50,9 @@ async function ProjectContent({ params }: PageProps) {
           {project.excerpt}
         </p>
       ) : null}
+      <div className="mt-stack-xl flex flex-col gap-stack">
+        <CmsPortableText value={project.body} />
+      </div>
     </main>
   )
 }

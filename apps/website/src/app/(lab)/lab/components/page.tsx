@@ -1,12 +1,11 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
+import { LayoutGridGuide } from '@/components/layout/layout-grid-guide'
+import { Link } from '@/components/ui/link'
+import { createPageMetadata } from '@/lib/seo/metadata'
 
-import { LayoutGridGuide } from '@/components/layout-grid-guide'
-
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Portfolio components',
-  robots: { index: false, follow: false },
-}
+  noIndex: true,
+})
 
 type ComponentEntry = {
   name: string
@@ -16,10 +15,33 @@ type ComponentEntry = {
   usedOn?: string
 }
 
+const uiComponents: ComponentEntry[] = [
+  {
+    name: 'Link',
+    path: 'src/components/ui/link.tsx',
+    description:
+      'Next.js Link wrapper with external URL detection and safe defaults.',
+    props: ['href', 'children', 'className', '...NextLinkProps'],
+  },
+  {
+    name: 'Image',
+    path: 'src/components/ui/image.tsx',
+    description: 'Sanity-aware Next.js Image wrapper with auto format URLs.',
+    props: ['image', 'alt', 'width', 'height', 'className', '...ImageProps'],
+  },
+  {
+    name: 'CmsPortableText',
+    path: 'src/components/cms/portable-text.tsx',
+    description: 'Portable Text renderer for Sanity body fields.',
+    props: ['value'],
+    usedOn: '/work/[slug]',
+  },
+]
+
 const layoutComponents: ComponentEntry[] = [
   {
     name: 'LayoutGridGuide',
-    path: 'src/components/layout-grid-guide.tsx',
+    path: 'src/components/layout/layout-grid-guide.tsx',
     description:
       'Full-viewport dashed column grid overlay. Configurable track count, line color, and edge-track visibility.',
     props: [
@@ -44,14 +66,14 @@ const infrastructure: ComponentEntry[] = [
   },
   {
     name: 'BreakpointsIndicator',
-    path: 'src/components/breakpoints-indicator.tsx',
+    path: 'src/lib/dev/breakpoints-indicator.tsx',
     description: 'Dev-only overlay showing the active Tailwind breakpoint.',
     props: ['—'],
     usedOn: 'Root layout',
   },
   {
     name: 'Analytics',
-    path: 'src/components/analytics.tsx',
+    path: 'src/components/layout/analytics.tsx',
     description: 'Vercel Analytics integration.',
     props: ['—'],
     usedOn: 'Root layout',
@@ -163,6 +185,16 @@ export default function ComponentsLabPage() {
               </div>
             </div>
           </div>
+        </Section>
+
+        <Section title="UI primitives">
+          <ul className="grid gap-stack-lg lg:grid-cols-2">
+            {uiComponents.map((entry) => (
+              <li key={entry.name}>
+                <ComponentCard entry={entry} />
+              </li>
+            ))}
+          </ul>
         </Section>
 
         <Section title="Layout">
