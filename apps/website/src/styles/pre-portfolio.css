@@ -1,25 +1,14 @@
 /**
- * Theatrical white stage + root scroll-snap for the pre-portfolio homepage.
- * Snap lives on `html` so it uses the same scroller Lenis wraps (not a nested overflow).
+ * Theatrical white stage for the pre-portfolio homepage.
+ * The story is clock-driven; page scroll stays locked for the scene.
  */
 html.pre-portfolio-stage,
 html.pre-portfolio-stage body {
   background-color: #fff;
 }
 
-html.pre-portfolio-snap {
-  scroll-snap-type: y mandatory;
-  scroll-behavior: auto;
-  overscroll-behavior-y: none;
-  overflow-x: hidden;
-}
-
-html.pre-portfolio-snap body {
-  overflow-x: hidden;
-}
-
-.pre-portfolio-beat {
-  height: 100dvh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+html.pre-portfolio-lock,
+html.pre-portfolio-lock body {
+  overflow: hidden;
+  overscroll-behavior: none;
 }

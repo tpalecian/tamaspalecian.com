@@ -2,10 +2,8 @@
 
 import { cn } from '@repo/utilities/cn'
 import { useLenis } from 'lenis/react'
-import { useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react'
+import { useReducedMotion } from 'motion/react'
 import {
-  type MutableRefObject,
-  type RefObject,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -22,13 +20,10 @@ import {
 } from './grok-bot.ts'
 import { NameLoader } from './name-loader'
 import { SpeechBubble } from './speech-bubble'
-import {
-  LAST_BEAT_INDEX,
-  STORY,
-  type StorySpeakerId,
-  speakersUpTo,
-} from './story'
+import { STORY, type StorySpeakerId, speakersUpTo } from './story'
 import { StoryAudio } from './story-audio'
+import { StoryTimeline } from './story-timeline'
+import { useStoryClock } from './use-story-clock'
 
 export type PrePortfolioSceneProps = {
   className?: string
@@ -51,7 +46,11 @@ export function PrePortfolioScene(props: PrePortfolioSceneProps) {
     const html = document.documentElement
     html.classList.add('pre-portfolio-stage')
     return () => {
-      html.classList.remove('pre-portfolio-stage', 'pre-portfolio-snap')
+      html.classList.remove(
+        'pre-portfolio-stage',
+        'pre-portfolio-lock',
+        'pre-portfolio-snap'
+      )
     }
   }, [])
 
@@ -99,9 +98,10 @@ type StoryDirectorProps = {
 }
 
 function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
-  const spacersRef = useRef<HTMLDivElement>(null)
-  const beatIndexRef = useRef(0)
-  const [beatIndex, setBeatIndex] = useState(0)
+  const clock = useStoryClock(reduceMotion)
+  const { beatIndex, overallProgress, status, goTo, togglePlay, skipToEnd } =
+    clock
+  const lastBeatRef = useRef(0)
   const [hardCut, setHardCut] = useState(false)
   const botSize = useStageBotSize()
   const castById = useMemo(() => {
@@ -112,80 +112,96 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
     return map
   }, [])
 
-  const { scrollYProgress } = useScroll({
-    target: spacersRef,
-    offset: ['start start', 'end end'],
-  })
+  useStageScrollLock()
 
-  const commitBeatIndex = useCallback((next: number) => {
-    const clamped = clampBeat(next)
-    if (beatIndexRef.current === clamped) return
-    beatIndexRef.current = clamped
-    setBeatIndex(clamped)
-  }, [])
-
-  const snappingRef = useRef(false)
-
-  const goToBeat = useStoryBeatSnap({
-    reduceMotion,
-    spacersRef,
-    beatIndexRef,
-    commitBeatIndex,
-    snappingRef,
-  })
-
-  useMotionValueEvent(scrollYProgress, 'change', (progress) => {
-    if (snappingRef.current) return
-    commitBeatIndex(Math.round(progress * LAST_BEAT_INDEX))
-  })
+  useLayoutEffect(() => {
+    const jumped = Math.abs(beatIndex - lastBeatRef.current) > 1
+    setHardCut(jumped)
+    lastBeatRef.current = beatIndex
+  }, [beatIndex])
 
   useEffect(() => {
-    const beat = STORY[beatIndex]
-    if (!beat) return
-    StoryAudio.play(beat)
+    if (status !== 'playing') {
+      StoryAudio.stop()
+      return
+    }
+    const nextBeat = STORY[beatIndex]
+    if (!nextBeat) return
+    StoryAudio.play(nextBeat)
     return () => {
       StoryAudio.stop()
     }
-  }, [beatIndex])
+  }, [beatIndex, status])
 
-  const skipToEnd = useCallback(() => {
-    StoryAudio.stop()
-    setHardCut(true)
-    goToBeat(LAST_BEAT_INDEX, { immediate: true })
-  }, [goToBeat])
+  const onSeek = useCallback(
+    (index: number) => {
+      goTo(index)
+    },
+    [goTo]
+  )
 
   useEffect(() => {
+    const isInteractive = (target: EventTarget | null): boolean => {
+      if (!(target instanceof Element)) return false
+      return Boolean(target.closest('button, a, input, textarea, select'))
+    }
+
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' || event.key === 'End') {
-        event.preventDefault()
-        skipToEnd()
+      switch (event.key) {
+        case ' ': {
+          if (isInteractive(event.target)) return
+          event.preventDefault()
+          togglePlay()
+          return
+        }
+        case 'ArrowLeft':
+          event.preventDefault()
+          goTo(beatIndex - 1)
+          return
+        case 'ArrowRight':
+          event.preventDefault()
+          goTo(beatIndex + 1)
+          return
+        case 'Escape':
+        case 'End':
+          event.preventDefault()
+          skipToEnd()
+          return
+        default:
+          return
       }
     }
+
     window.addEventListener('keydown', onKey)
     return () => {
       window.removeEventListener('keydown', onKey)
     }
-  }, [skipToEnd])
+  }, [beatIndex, goTo, skipToEnd, togglePlay])
 
   const beat = STORY[beatIndex] ?? STORY[0]
   const visibleIds = speakersUpTo(beatIndex)
   const speakerIndex = visibleIds.indexOf(beat.speaker)
-  const showCue = beatIndex === 0
+  const talking = status === 'playing'
 
   return (
     <main
-      className={cn('relative bg-white text-foreground', className)}
+      className={cn(
+        'relative min-h-dvh overflow-hidden bg-white text-foreground',
+        className
+      )}
       data-pre-portfolio-scene=""
       data-story-phase="stage"
+      data-story-driver="clock"
       data-beat-id={beat.id}
       data-beat-index={beatIndex}
       data-speaker={beat.speaker}
       data-cast-count={visibleIds.length}
-      data-snap-driver="lenis"
+      data-story-status={status}
+      data-story-playing={talking ? 'true' : 'false'}
       data-reduced-motion={reduceMotion ? 'true' : 'false'}
     >
-      <div className="fixed inset-0 z-overlay flex touch-pan-y flex-col overflow-x-hidden bg-white">
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-16 sm:gap-8">
+      <div className="fixed inset-0 z-overlay flex flex-col overflow-hidden bg-white">
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-8 sm:gap-8">
           <div className="flex min-h-16 w-full items-end justify-center">
             <SpeechBubble
               speaker={beat.speaker}
@@ -205,7 +221,8 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
                 botSize,
                 beat.speaker,
                 index,
-                speakerIndex
+                speakerIndex,
+                talking
               )
               if (!member) return null
 
@@ -223,37 +240,17 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
           </ul>
         </div>
 
-        {showCue ? (
-          <p
-            data-scroll-cue=""
-            className={cn(
-              'pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-caption text-muted',
-              reduceMotion ? '' : 'animate-pulse'
-            )}
-          >
-            Scroll
-          </p>
-        ) : null}
-
-        <button
-          type="button"
-          data-story-skip=""
-          className="absolute right-6 bottom-20 z-sticky rounded-full border border-border-subtle bg-white px-3 py-1.5 text-caption text-foreground"
-          onClick={skipToEnd}
-        >
-          Skip
-        </button>
-      </div>
-
-      <div ref={spacersRef} aria-hidden="true">
-        {STORY.map((item, index) => (
-          <section
-            key={item.id}
-            className="pre-portfolio-beat"
-            data-story-beat={item.id}
-            data-beat-index={index}
+        <div className="flex shrink-0 justify-center px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <StoryTimeline
+            beatIndex={beatIndex}
+            overallProgress={overallProgress}
+            status={status}
+            reduceMotion={reduceMotion}
+            onTogglePlay={togglePlay}
+            onSeek={onSeek}
+            onSkip={skipToEnd}
           />
-        ))}
+        </div>
       </div>
     </main>
   )
@@ -265,14 +262,15 @@ function stagedCharacter(
   size: number,
   speaker: StorySpeakerId,
   index: number,
-  speakerIndex: number
+  speakerIndex: number,
+  talking: boolean
 ): GrokCharacter | null {
   if (!base) return null
   const isSpeaker = id === speaker
   return {
     ...base,
     size,
-    expression: isSpeaker ? 'talk' : 'idle',
+    expression: isSpeaker && talking ? 'talk' : 'idle',
     gaze: gazeTowardSpeaker(index, speakerIndex, isSpeaker, base.gaze),
   }
 }
@@ -290,12 +288,6 @@ function gazeTowardSpeaker(
     x: Math.sign(dx) * 0.62,
     y: 0.08,
   }
-}
-
-function clampBeat(index: number): number {
-  if (index < 0) return 0
-  if (index > LAST_BEAT_INDEX) return LAST_BEAT_INDEX
-  return index
 }
 
 function useStageBotSize(): number {
@@ -320,166 +312,50 @@ function useStageBotSize(): number {
   return size
 }
 
-function useStoryBeatSnap({
-  reduceMotion,
-  spacersRef,
-  beatIndexRef,
-  commitBeatIndex,
-  snappingRef,
-}: {
-  reduceMotion: boolean
-  spacersRef: RefObject<HTMLDivElement | null>
-  beatIndexRef: MutableRefObject<number>
-  commitBeatIndex: (next: number) => void
-  snappingRef: MutableRefObject<boolean>
-}): (index: number, options?: { immediate?: boolean }) => void {
+function useStageScrollLock() {
   const lenis = useLenis()
-  const goToRef = useRef<
-    (index: number, options?: { immediate?: boolean }) => void
-  >(() => {})
 
   useLayoutEffect(() => {
     const html = document.documentElement
-    html.classList.add('pre-portfolio-snap')
-    lenis?.resize()
+    html.classList.add('pre-portfolio-lock', 'lenis-stopped')
+    html.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
 
-    let locked = false
-    let unlockId = 0
-    let touchAcc = 0
-
-    const yFor = (index: number): number => {
-      const el = spacersRef.current?.querySelector(
-        `[data-beat-index="${index}"]`
-      )
-      if (!(el instanceof HTMLElement)) return index * window.innerHeight
-      return el.getBoundingClientRect().top + window.scrollY
+    if (lenis) {
+      lenis.stop()
+      lenis.scrollTo(0, { immediate: true })
+    } else {
+      window.scrollTo(0, 0)
     }
 
-    const goTo = (index: number, options: { immediate?: boolean } = {}) => {
-      const next = clampBeat(index)
-      const immediate = options.immediate === true || reduceMotion
-      locked = true
-      snappingRef.current = true
-      window.clearTimeout(unlockId)
-      commitBeatIndex(next)
-      // Loader lock leaves Lenis with a 1-viewport limit until resize.
-      lenis?.resize()
-      const y = yFor(next)
-      const duration = immediate ? 0 : 0.45
-
-      const unlock = () => {
-        locked = false
-        snappingRef.current = false
-      }
-
-      if (lenis) {
-        lenis.scrollTo(y, {
-          immediate,
-          duration: immediate ? undefined : duration,
-          lock: true,
-          force: true,
-          onComplete: unlock,
-        })
-        if (immediate && Math.abs(lenis.actualScroll - y) > 1) {
-          window.scrollTo({ top: y, behavior: 'auto' })
-        }
-      } else {
-        window.scrollTo({ top: y, behavior: 'auto' })
-        unlock()
-      }
-
-      unlockId = window.setTimeout(
-        unlock,
-        (immediate ? 0 : duration) * 1000 + 80
-      )
+    const preventScroll = (event: Event) => {
+      event.preventDefault()
     }
 
-    goToRef.current = goTo
+    const blockKeys = new Set([
+      'ArrowUp',
+      'ArrowDown',
+      'PageUp',
+      'PageDown',
+      'Home',
+    ])
 
-    const isInteractive = (target: EventTarget | null): boolean => {
-      if (!(target instanceof Element)) return false
-      return Boolean(target.closest('button, a, input, textarea, select'))
+    const preventKeys = (event: KeyboardEvent) => {
+      if (blockKeys.has(event.key)) event.preventDefault()
     }
 
-    const onVirtual = (data: {
-      deltaY: number
-      event: Event & { lenisStopPropagation?: boolean }
-    }) => {
-      const { event, deltaY } = data
-      if (isInteractive(event.target)) return
-
-      event.lenisStopPropagation = true
-      if (event.cancelable) event.preventDefault()
-
-      const type = event.type
-      if (type === 'touchstart') {
-        touchAcc = 0
-        return
-      }
-      if (type === 'touchmove') {
-        touchAcc += deltaY
-        return
-      }
-      if (type === 'touchend') {
-        const delta = Math.abs(touchAcc) > Math.abs(deltaY) ? touchAcc : deltaY
-        touchAcc = 0
-        if (locked || Math.abs(delta) < 24) return
-        goTo(beatIndexRef.current + Math.sign(delta))
-        return
-      }
-
-      if (locked || Math.abs(deltaY) < 12) return
-      goTo(beatIndexRef.current + Math.sign(deltaY))
-    }
-
-    const onKey = (event: KeyboardEvent) => {
-      if (isInteractive(event.target) && event.key === ' ') return
-
-      switch (event.key) {
-        case 'PageDown':
-        case 'ArrowDown':
-          event.preventDefault()
-          goTo(beatIndexRef.current + 1)
-          return
-        case 'PageUp':
-        case 'ArrowUp':
-          event.preventDefault()
-          goTo(beatIndexRef.current - 1)
-          return
-        case ' ':
-          event.preventDefault()
-          goTo(beatIndexRef.current + 1)
-          return
-        default:
-          return
-      }
-    }
-
-    const onResize = () => {
-      goTo(beatIndexRef.current, { immediate: true })
-    }
-
-    lenis?.on('virtual-scroll', onVirtual)
-    window.addEventListener('keydown', onKey)
-    window.addEventListener('resize', onResize)
+    window.addEventListener('wheel', preventScroll, { passive: false })
+    window.addEventListener('touchmove', preventScroll, { passive: false })
+    window.addEventListener('keydown', preventKeys, { capture: true })
 
     return () => {
-      html.classList.remove('pre-portfolio-snap')
-      lenis?.off('virtual-scroll', onVirtual)
-      window.removeEventListener('keydown', onKey)
-      window.removeEventListener('resize', onResize)
-      window.clearTimeout(unlockId)
+      html.classList.remove('pre-portfolio-lock', 'lenis-stopped')
+      html.style.overflow = ''
+      document.body.style.overflow = ''
+      lenis?.start()
+      window.removeEventListener('wheel', preventScroll)
+      window.removeEventListener('touchmove', preventScroll)
+      window.removeEventListener('keydown', preventKeys, { capture: true })
     }
-  }, [
-    beatIndexRef,
-    commitBeatIndex,
-    lenis,
-    reduceMotion,
-    snappingRef,
-    spacersRef,
-  ])
-
-  return useCallback((index: number, options?: { immediate?: boolean }) => {
-    goToRef.current(index, options)
-  }, [])
+  }, [lenis])
 }

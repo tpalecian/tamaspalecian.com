@@ -14,7 +14,8 @@
   }
 
   html.lenis-stopped,
-  html.name-loader-lock {
+  html.name-loader-lock,
+  html.pre-portfolio-lock {
     overflow: hidden;
   }
 

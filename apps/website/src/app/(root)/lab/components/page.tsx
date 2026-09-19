@@ -52,7 +52,7 @@ const layoutComponents: ComponentEntry[] = [
     name: 'SpeechBubble',
     path: 'src/components/pre-portfolio/speech-bubble.tsx',
     description:
-      'Black pill, white type. One line per story snap on the homepage stage.',
+      'Black pill, white type. One line per timeline beat on the homepage stage.',
     props: ['speaker', 'line', 'className', 'reducedMotion'],
     usedOn: '/',
   },
@@ -60,8 +60,24 @@ const layoutComponents: ComponentEntry[] = [
     name: 'PrePortfolioScene',
     path: 'src/components/pre-portfolio/pre-portfolio-scene.tsx',
     description:
-      'Homepage director: timed loader, then a pinned white stage with one scroll-snapped beat at a time.',
+      'Homepage director: timed loader, then a pinned white stage whose beats auto-advance on a clock.',
     props: ['className', 'reducedMotion'],
+    usedOn: '/',
+  },
+  {
+    name: 'StoryTimeline',
+    path: 'src/components/pre-portfolio/story-timeline.tsx',
+    description:
+      'Play/pause, clickable beat progress, and skip for the homepage story clock.',
+    props: [
+      'beatIndex',
+      'overallProgress',
+      'status',
+      'reduceMotion',
+      'onTogglePlay',
+      'onSeek',
+      'onSkip',
+    ],
     usedOn: '/',
   },
 ]

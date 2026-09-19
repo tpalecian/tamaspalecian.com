@@ -189,7 +189,7 @@ export const STORY: StoryBeat[] = [
   {
     id: 'still-in-development',
     speaker: 'storyteller',
-    line: 'Still in development. Scroll back if you missed a fight.',
+    line: 'Still in development. Scrub back if you missed a fight.',
   },
   {
     id: 'five-opinions',
@@ -235,4 +235,12 @@ export function speakersUpTo(beatIndex: number): StorySpeakerId[] {
   }
 
   return order
+}
+
+export function beatDurationMs(line: string, reduceMotion: boolean): number {
+  const chars = line.length
+  if (reduceMotion) {
+    return Math.min(1100, Math.max(480, 380 + chars * 14))
+  }
+  return Math.min(5000, Math.max(2200, 1500 + chars * 40))
 }
