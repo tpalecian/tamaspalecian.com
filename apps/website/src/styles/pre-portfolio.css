@@ -1,0 +1,14 @@
+/**
+ * Theatrical white stage for the pre-portfolio homepage.
+ * The story is clock-driven; page scroll stays locked for the scene.
+ */
+html.pre-portfolio-stage,
+html.pre-portfolio-stage body {
+  background-color: #fff;
+}
+
+html.pre-portfolio-lock,
+html.pre-portfolio-lock body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}

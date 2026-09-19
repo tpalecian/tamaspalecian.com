@@ -30,6 +30,38 @@ const layoutComponents: ComponentEntry[] = [
       'className',
       'lineClassName',
     ],
+    usedOn: '/lab/components',
+  },
+  {
+    name: 'NameLoader',
+    path: 'src/components/pre-portfolio/name-loader.tsx',
+    description:
+      'Timed SVG liquid fill of the site name, then a dissolve to the white story stage. Scroll stays locked until it finishes.',
+    props: ['className', 'onComplete', 'reducedMotion'],
+    usedOn: '/',
+  },
+  {
+    name: 'GrokBot',
+    path: 'src/components/pre-portfolio/grok-bot.tsx',
+    description:
+      'Grok-style SVG character factory: eight shapes, eleven colors, spawn/idle/blink, looped talk, and a Tamas portrait slot.',
+    props: ['character', 'className', 'reducedMotion', 'spawnKey'],
+    usedOn: '/',
+  },
+  {
+    name: 'SpeechBubble',
+    path: 'src/components/pre-portfolio/speech-bubble.tsx',
+    description:
+      'Black pill, white type. One line per timeline beat on the homepage stage.',
+    props: ['speaker', 'line', 'className', 'reducedMotion'],
+    usedOn: '/',
+  },
+  {
+    name: 'PrePortfolioScene',
+    path: 'src/components/pre-portfolio/pre-portfolio-scene.tsx',
+    description:
+      'Homepage director: timed loader, then a pinned white stage whose beats auto-advance on a clock.',
+    props: ['className', 'reducedMotion'],
     usedOn: '/',
   },
 ]
@@ -140,6 +172,18 @@ export default function ComponentsLabPage() {
             Design tokens
           </Link>
           <Link
+            href="/lab/grok-bots"
+            className="rounded-md border border-border-subtle px-3 py-1.5 text-caption text-muted transition-colors hover:bg-surface-elevated"
+          >
+            Grok bots
+          </Link>
+          <Link
+            href="/lab/name-loader"
+            className="rounded-md border border-border-subtle px-3 py-1.5 text-caption text-muted transition-colors hover:bg-surface-elevated"
+          >
+            Name loader
+          </Link>
+          <Link
             href="/"
             className="rounded-md border border-border-subtle bg-surface-elevated px-3 py-1.5 text-caption text-foreground transition-colors hover:bg-surface-sunken"
           >
@@ -158,7 +202,7 @@ export default function ComponentsLabPage() {
               <LayoutGridGuide className="absolute inset-0 h-full opacity-40" />
               <div className="relative z-10 flex h-56 items-center justify-center px-gutter">
                 <p className="max-w-prose text-center text-caption text-muted">
-                  Construction grid used on the portfolio home page
+                  Construction grid overlay still used in the lab
                 </p>
               </div>
             </div>
