@@ -341,6 +341,7 @@ function useStoryBeatSnap({
   useLayoutEffect(() => {
     const html = document.documentElement
     html.classList.add('pre-portfolio-snap')
+    lenis?.resize()
 
     let locked = false
     let unlockId = 0
@@ -361,6 +362,8 @@ function useStoryBeatSnap({
       snappingRef.current = true
       window.clearTimeout(unlockId)
       commitBeatIndex(next)
+      // Loader lock leaves Lenis with a 1-viewport limit until resize.
+      lenis?.resize()
       const y = yFor(next)
       const duration = immediate ? 0 : 0.45
 
@@ -377,6 +380,9 @@ function useStoryBeatSnap({
           force: true,
           onComplete: unlock,
         })
+        if (immediate && Math.abs(lenis.actualScroll - y) > 1) {
+          window.scrollTo({ top: y, behavior: 'auto' })
+        }
       } else {
         window.scrollTo({ top: y, behavior: 'auto' })
         unlock()
