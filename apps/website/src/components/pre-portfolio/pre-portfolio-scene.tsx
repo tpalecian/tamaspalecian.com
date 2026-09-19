@@ -36,8 +36,14 @@ export type PrePortfolioSceneProps = {
 
 export function PrePortfolioScene(props: PrePortfolioSceneProps) {
   const prefersReducedMotion = useReducedMotion()
-  const reduceMotion = props.reducedMotion ?? prefersReducedMotion === true
+  const [boot, setBoot] = useState(props.reducedMotion !== undefined)
   const [ready, setReady] = useState(false)
+  const reduceMotion =
+    props.reducedMotion ?? (boot && prefersReducedMotion === true)
+
+  useEffect(() => {
+    setBoot(true)
+  }, [])
 
   useLayoutEffect(() => {
     const html = document.documentElement
@@ -46,6 +52,17 @@ export function PrePortfolioScene(props: PrePortfolioSceneProps) {
       html.classList.remove('pre-portfolio-stage', 'pre-portfolio-snap')
     }
   }, [])
+
+  if (!boot) {
+    return (
+      <div
+        className="min-h-dvh bg-white"
+        data-pre-portfolio-scene=""
+        data-story-phase="loading"
+        data-reduced-motion="false"
+      />
+    )
+  }
 
   return (
     <>
@@ -83,8 +100,9 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
   const spacersRef = useRef<HTMLDivElement>(null)
   const beatIndexRef = useRef(0)
   const [beatIndex, setBeatIndex] = useState(0)
+  const [hardCut, setHardCut] = useState(false)
   const botSize = useStageBotSize()
-  const lenisStopped = useStorySnapHandoff(true)
+  const nativeSnap = useStorySnapHandoff(true)
   const castById = useMemo(() => {
     const map = new Map<string, GrokCharacter>()
     for (const member of createPrePortfolioCast()) {
@@ -120,6 +138,7 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
 
   const skipToEnd = useCallback(() => {
     StoryAudio.stop()
+    setHardCut(true)
     const last = spacersRef.current?.querySelector(
       `[data-beat-index="${LAST_BEAT_INDEX}"]`
     )
@@ -169,16 +188,16 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
       data-beat-index={beatIndex}
       data-speaker={beat.speaker}
       data-cast-count={visibleIds.length}
-      data-lenis-stopped={lenisStopped ? 'true' : 'false'}
+      data-lenis-smooth-wheel={nativeSnap ? 'false' : 'true'}
       data-reduced-motion={reduceMotion ? 'true' : 'false'}
     >
-      <div className="fixed inset-0 z-raised flex touch-pan-y flex-col overflow-x-hidden bg-white">
+      <div className="fixed inset-0 z-overlay flex touch-pan-y flex-col overflow-x-hidden bg-white">
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-16 sm:gap-8">
           <div className="flex min-h-16 w-full items-end justify-center">
             <SpeechBubble
               speaker={beat.speaker}
               line={beat.line}
-              reducedMotion={reduceMotion}
+              reducedMotion={reduceMotion || hardCut}
             />
           </div>
 
@@ -226,7 +245,7 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
         <button
           type="button"
           data-story-skip=""
-          className="absolute right-4 bottom-6 z-sticky rounded-full border border-border-subtle bg-white px-3 py-1.5 text-caption text-foreground"
+          className="absolute right-6 bottom-20 z-sticky rounded-full border border-border-subtle bg-white px-3 py-1.5 text-caption text-foreground"
           onClick={skipToEnd}
         >
           Skip
@@ -310,35 +329,39 @@ function useStageBotSize(): number {
 
 function useStorySnapHandoff(active: boolean): boolean {
   const lenis = useLenis()
-  const [stopped, setStopped] = useState(true)
-  const previousAutoToggle = useRef<boolean | undefined>(undefined)
+  const previous = useRef<{
+    smoothWheel?: boolean
+    syncTouch?: boolean
+  }>({})
 
   useLayoutEffect(() => {
-    if (!active) {
-      setStopped(lenis?.isStopped ?? true)
-      return
-    }
+    if (!active) return
 
     const html = document.documentElement
     html.classList.add('pre-portfolio-snap')
 
     if (lenis) {
-      previousAutoToggle.current = lenis.options.autoToggle
-      lenis.options.autoToggle = false
-      lenis.stop()
+      previous.current = {
+        smoothWheel: lenis.options.smoothWheel,
+        syncTouch: lenis.options.syncTouch,
+      }
+      // Native wheel/touch so CSS `scroll-snap-stop: always` can own each beat.
+      // Lenis lerp on those gestures is what fights snap.
+      lenis.options.smoothWheel = false
+      lenis.options.syncTouch = false
     }
-
-    setStopped(lenis?.isStopped ?? true)
 
     return () => {
       html.classList.remove('pre-portfolio-snap')
       if (!lenis) return
-      if (previousAutoToggle.current !== undefined) {
-        lenis.options.autoToggle = previousAutoToggle.current
+      if (previous.current.smoothWheel !== undefined) {
+        lenis.options.smoothWheel = previous.current.smoothWheel
       }
-      lenis.start()
+      if (previous.current.syncTouch !== undefined) {
+        lenis.options.syncTouch = previous.current.syncTouch
+      }
     }
   }, [active, lenis])
 
-  return stopped
+  return true
 }
