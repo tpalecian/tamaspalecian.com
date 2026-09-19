@@ -1,12 +1,12 @@
-import {
-  presentationLocations,
-  presentationMainDocuments,
-} from '@/lib/presentation'
 import { apiVersion, dataset, previewURL, projectId, schema } from '@repo/cms'
 import { visionTool } from '@sanity/vision'
 import { defineConfig } from 'sanity'
 import { presentationTool } from 'sanity/presentation'
 import { structureTool } from 'sanity/structure'
+import {
+  presentationLocations,
+  presentationMainDocuments,
+} from '@/lib/presentation'
 
 export default defineConfig({
   name: 'default',

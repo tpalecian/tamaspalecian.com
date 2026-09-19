@@ -1,7 +1,6 @@
 import { cn } from '@repo/utilities/cn'
 import type { ReactNode } from 'react'
 
-
 import { IntroCopy } from './intro-copy'
 import { IntroSkip } from './intro-skip'
 

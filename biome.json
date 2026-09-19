@@ -12,6 +12,7 @@
       "packages/**",
       "!!**/.next",
       "!!**/dist",
+      "!!**/.sanity",
       "!!**/.cache",
       "!!**/next-env.d.ts"
     ]
