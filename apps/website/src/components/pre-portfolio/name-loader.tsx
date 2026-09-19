@@ -4,6 +4,7 @@ import { cn } from '@repo/utilities/cn'
 import { useLenis } from 'lenis/react'
 import {
   animate,
+  MotionConfig,
   motion,
   useAnimationFrame,
   useMotionValue,
@@ -36,18 +37,30 @@ function svgId(reactId: string, suffix: string): string {
   return `name-loader-${reactId.replace(/:/g, '')}-${suffix}`
 }
 
-export function NameLoader({
+export function NameLoader(props: NameLoaderProps) {
+  const prefersReducedMotion = useReducedMotion()
+  const reduceMotion = props.reducedMotion ?? prefersReducedMotion === true
+
+  return (
+    <MotionConfig reducedMotion="never">
+      <NameLoaderStage {...props} reduceMotion={reduceMotion} />
+    </MotionConfig>
+  )
+}
+
+type NameLoaderStageProps = NameLoaderProps & {
+  reduceMotion: boolean
+}
+
+function NameLoaderStage({
   className,
   onComplete,
-  reducedMotion: reducedMotionOverride,
-}: NameLoaderProps) {
+  reduceMotion,
+}: NameLoaderStageProps) {
   const reactId = useId()
   const nameClipId = svgId(reactId, 'clip')
   const liquidFilterId = svgId(reactId, 'liquid')
   const dissolveFilterId = svgId(reactId, 'dissolve')
-
-  const prefersReducedMotion = useReducedMotion()
-  const reduceMotion = reducedMotionOverride ?? prefersReducedMotion === true
   const lenis = useLenis()
   const fill = useMotionValue(0)
   const dissolve = useMotionValue(0)
