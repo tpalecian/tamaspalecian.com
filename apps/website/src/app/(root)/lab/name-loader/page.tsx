@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 
 import { NameLoaderLabView } from './name-loader-lab-view'
 
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 }
 
 export default function NameLoaderLabPage() {
-  return <NameLoaderLabView />
+  return (
+    <Suspense>
+      <NameLoaderLabView />
+    </Suspense>
+  )
 }

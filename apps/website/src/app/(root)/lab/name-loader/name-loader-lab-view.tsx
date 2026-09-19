@@ -1,10 +1,19 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
 import { NameLoader } from '@/components/pre-portfolio/name-loader'
 
 export function NameLoaderLabView() {
+  const searchParams = useSearchParams()
+  const motionParam = searchParams.get('motion')
+  const reducedMotion =
+    motionParam === 'full'
+      ? false
+      : motionParam === 'reduced'
+        ? true
+        : undefined
   const [runId, setRunId] = useState(0)
   const [complete, setComplete] = useState(false)
 
@@ -12,6 +21,7 @@ export function NameLoaderLabView() {
     <>
       <NameLoader
         key={runId}
+        reducedMotion={reducedMotion}
         onComplete={() => {
           setComplete(true)
         }}
@@ -23,7 +33,10 @@ export function NameLoaderLabView() {
         </h1>
         <p className="mt-stack max-w-prose text-body text-muted">
           Isolated preview of the timed liquid SVG loader. Scroll stays locked
-          until the fill and dissolve finish. Reload or replay to watch again.
+          until the fill and dissolve finish. Use{' '}
+          <code className="text-caption">?motion=full</code> to force the liquid
+          fill, or <code className="text-caption">?motion=reduced</code> for the
+          short fade. Reload or replay to watch again.
         </p>
         <p
           className="mt-stack-lg font-mono text-caption"

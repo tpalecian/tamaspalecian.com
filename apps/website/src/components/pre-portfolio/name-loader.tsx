@@ -28,25 +28,34 @@ const REDUCED_FADE_S = 0.35
 export type NameLoaderProps = {
   className?: string
   onComplete?: () => void
+  /** When set, overrides `prefers-reduced-motion` (lab preview). */
+  reducedMotion?: boolean
 }
 
 function svgId(reactId: string, suffix: string): string {
   return `name-loader-${reactId.replace(/:/g, '')}-${suffix}`
 }
 
-export function NameLoader({ className, onComplete }: NameLoaderProps) {
+export function NameLoader({
+  className,
+  onComplete,
+  reducedMotion: reducedMotionOverride,
+}: NameLoaderProps) {
   const reactId = useId()
   const nameClipId = svgId(reactId, 'clip')
   const liquidFilterId = svgId(reactId, 'liquid')
   const dissolveFilterId = svgId(reactId, 'dissolve')
 
-  const reduceMotion = useReducedMotion()
+  const prefersReducedMotion = useReducedMotion()
+  const reduceMotion = reducedMotionOverride ?? prefersReducedMotion === true
   const lenis = useLenis()
   const fill = useMotionValue(0)
   const dissolve = useMotionValue(0)
   const fillPathRef = useRef<SVGPathElement>(null)
   const meniscusPathRef = useRef<SVGPathElement>(null)
   const completedRef = useRef(false)
+  const onCompleteRef = useRef(onComplete)
+  onCompleteRef.current = onComplete
   const [phase, setPhase] = useState<'filling' | 'dissolving' | 'done'>(
     'filling'
   )
@@ -58,8 +67,8 @@ export function NameLoader({ className, onComplete }: NameLoaderProps) {
     if (completedRef.current) return
     completedRef.current = true
     setPhase('done')
-    onComplete?.()
-  }, [onComplete])
+    onCompleteRef.current?.()
+  }, [])
 
   useLayoutEffect(() => {
     lenis?.stop()
@@ -98,52 +107,61 @@ export function NameLoader({ className, onComplete }: NameLoaderProps) {
   }, [lenis])
 
   useLayoutEffect(() => {
-    if (reduceMotion === null) return
-
-    let cancelled = false
+    let stopped = false
     const controls: Array<{ stop: () => void }> = []
+    let fallbackId = 0
 
-    async function run() {
-      if (reduceMotion) {
-        fill.set(1)
-        fillPathRef.current?.setAttribute(
-          'd',
-          createLiquidFillPath(1, 0, { amplitude: 0 })
-        )
-        meniscusPathRef.current?.setAttribute('d', '')
-        const fade = animate(dissolve, 1, {
+    const done = () => {
+      if (stopped) return
+      finish()
+    }
+
+    if (reduceMotion) {
+      fill.set(1)
+      fillPathRef.current?.setAttribute(
+        'd',
+        createLiquidFillPath(1, 0, { amplitude: 0 })
+      )
+      meniscusPathRef.current?.setAttribute('d', '')
+      controls.push(
+        animate(dissolve, 1, {
           delay: REDUCED_HOLD_S,
           duration: REDUCED_FADE_S,
           ease: 'easeOut',
+          onComplete: done,
         })
-        controls.push(fade)
-        await fade
-        if (!cancelled) finish()
-        return
-      }
-
-      const fillAnim = animate(fill, 1, {
-        duration: FILL_DURATION_S,
-        ease: [0.22, 1, 0.36, 1],
-      })
-      controls.push(fillAnim)
-      await fillAnim
-      if (cancelled) return
-
-      setPhase('dissolving')
-      const dissolveAnim = animate(dissolve, 1, {
-        duration: DISSOLVE_DURATION_S,
-        ease: [0.4, 0, 1, 1],
-      })
-      controls.push(dissolveAnim)
-      await dissolveAnim
-      if (!cancelled) finish()
+      )
+      fallbackId = window.setTimeout(
+        done,
+        (REDUCED_HOLD_S + REDUCED_FADE_S) * 1000 + 120
+      )
+    } else {
+      controls.push(
+        animate(fill, 1, {
+          duration: FILL_DURATION_S,
+          ease: [0.22, 1, 0.36, 1],
+          onComplete: () => {
+            if (stopped) return
+            setPhase('dissolving')
+            controls.push(
+              animate(dissolve, 1, {
+                duration: DISSOLVE_DURATION_S,
+                ease: [0.4, 0, 1, 1],
+                onComplete: done,
+              })
+            )
+          },
+        })
+      )
+      fallbackId = window.setTimeout(
+        done,
+        (FILL_DURATION_S + DISSOLVE_DURATION_S) * 1000 + 200
+      )
     }
 
-    void run()
-
     return () => {
-      cancelled = true
+      stopped = true
+      window.clearTimeout(fallbackId)
       for (const control of controls) control.stop()
     }
   }, [dissolve, fill, finish, reduceMotion])
@@ -164,7 +182,7 @@ export function NameLoader({ className, onComplete }: NameLoaderProps) {
 
   if (phase === 'done') return null
 
-  const useLiquid = reduceMotion !== true
+  const useLiquid = !reduceMotion
   const viewBox = `0 0 ${NAME_VIEWBOX_WIDTH} ${NAME_VIEWBOX_HEIGHT}`
 
   return (
