@@ -71,9 +71,22 @@ export function NameLoader({
   }, [])
 
   useLayoutEffect(() => {
-    lenis?.stop()
     const html = document.documentElement
-    html.classList.add('lenis-stopped')
+
+    const unlock = () => {
+      html.classList.remove('name-loader-lock', 'lenis-stopped')
+      html.style.overflow = ''
+      document.body.style.overflow = ''
+      lenis?.start()
+    }
+
+    if (phase === 'done') {
+      unlock()
+      return
+    }
+
+    html.classList.add('name-loader-lock')
+    lenis?.stop()
 
     const blockKeys = new Set([
       'ArrowUp',
@@ -101,10 +114,9 @@ export function NameLoader({
       window.removeEventListener('wheel', preventScroll)
       window.removeEventListener('touchmove', preventScroll)
       window.removeEventListener('keydown', preventKeys, { capture: true })
-      html.classList.remove('lenis-stopped')
-      lenis?.start()
+      unlock()
     }
-  }, [lenis])
+  }, [lenis, phase])
 
   useLayoutEffect(() => {
     let stopped = false

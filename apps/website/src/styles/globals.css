@@ -13,7 +13,8 @@
     background-color: var(--color-background);
   }
 
-  html.lenis-stopped {
+  html.lenis-stopped,
+  html.name-loader-lock {
     overflow: hidden;
   }
 
