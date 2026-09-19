@@ -101,8 +101,13 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
   const clock = useStoryClock(reduceMotion)
   const { beatIndex, overallProgress, status, goTo, togglePlay, skipToEnd } =
     clock
-  const lastBeatRef = useRef(0)
-  const [hardCut, setHardCut] = useState(false)
+  const lastBeatRef = useRef(beatIndex)
+  const hardCutRef = useRef(false)
+  if (lastBeatRef.current !== beatIndex) {
+    hardCutRef.current = Math.abs(beatIndex - lastBeatRef.current) > 1
+    lastBeatRef.current = beatIndex
+  }
+  const hardCut = hardCutRef.current
   const botSize = useStageBotSize()
   const castById = useMemo(() => {
     const map = new Map<string, GrokCharacter>()
@@ -113,12 +118,6 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
   }, [])
 
   useStageScrollLock()
-
-  useLayoutEffect(() => {
-    const jumped = Math.abs(beatIndex - lastBeatRef.current) > 1
-    setHardCut(jumped)
-    lastBeatRef.current = beatIndex
-  }, [beatIndex])
 
   useEffect(() => {
     if (status !== 'playing') {
@@ -200,7 +199,7 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
       data-story-playing={talking ? 'true' : 'false'}
       data-reduced-motion={reduceMotion ? 'true' : 'false'}
     >
-      <div className="fixed inset-0 z-overlay flex flex-col overflow-hidden bg-white">
+      <div className="fixed inset-0 z-[60] flex flex-col overflow-hidden bg-white">
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-8 sm:gap-8">
           <div className="flex min-h-16 w-full items-end justify-center">
             <SpeechBubble
