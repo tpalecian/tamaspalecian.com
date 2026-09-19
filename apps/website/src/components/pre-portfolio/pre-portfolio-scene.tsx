@@ -4,6 +4,8 @@ import { cn } from '@repo/utilities/cn'
 import { useLenis } from 'lenis/react'
 import { useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react'
 import {
+  type MutableRefObject,
+  type RefObject,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -102,7 +104,6 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
   const [beatIndex, setBeatIndex] = useState(0)
   const [hardCut, setHardCut] = useState(false)
   const botSize = useStageBotSize()
-  const nativeSnap = useStorySnapHandoff(true)
   const castById = useMemo(() => {
     const map = new Map<string, GrokCharacter>()
     for (const member of createPrePortfolioCast()) {
@@ -123,7 +124,18 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
     setBeatIndex(clamped)
   }, [])
 
+  const snappingRef = useRef(false)
+
+  const goToBeat = useStoryBeatSnap({
+    reduceMotion,
+    spacersRef,
+    beatIndexRef,
+    commitBeatIndex,
+    snappingRef,
+  })
+
   useMotionValueEvent(scrollYProgress, 'change', (progress) => {
+    if (snappingRef.current) return
     commitBeatIndex(Math.round(progress * LAST_BEAT_INDEX))
   })
 
@@ -139,40 +151,21 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
   const skipToEnd = useCallback(() => {
     StoryAudio.stop()
     setHardCut(true)
-    const last = spacersRef.current?.querySelector(
-      `[data-beat-index="${LAST_BEAT_INDEX}"]`
-    )
-    last?.scrollIntoView({ behavior: 'auto', block: 'start' })
-    commitBeatIndex(LAST_BEAT_INDEX)
-  }, [commitBeatIndex])
+    goToBeat(LAST_BEAT_INDEX, { immediate: true })
+  }, [goToBeat])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' || event.key === 'End') {
         event.preventDefault()
         skipToEnd()
       }
     }
-
     window.addEventListener('keydown', onKey)
     return () => {
       window.removeEventListener('keydown', onKey)
     }
   }, [skipToEnd])
-
-  useEffect(() => {
-    const onResize = () => {
-      const target = spacersRef.current?.querySelector(
-        `[data-beat-index="${beatIndexRef.current}"]`
-      )
-      target?.scrollIntoView({ behavior: 'auto', block: 'start' })
-    }
-
-    window.addEventListener('resize', onResize)
-    return () => {
-      window.removeEventListener('resize', onResize)
-    }
-  }, [])
 
   const beat = STORY[beatIndex] ?? STORY[0]
   const visibleIds = speakersUpTo(beatIndex)
@@ -188,7 +181,7 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
       data-beat-index={beatIndex}
       data-speaker={beat.speaker}
       data-cast-count={visibleIds.length}
-      data-lenis-smooth-wheel={nativeSnap ? 'false' : 'true'}
+      data-snap-driver="lenis"
       data-reduced-motion={reduceMotion ? 'true' : 'false'}
     >
       <div className="fixed inset-0 z-overlay flex touch-pan-y flex-col overflow-x-hidden bg-white">
@@ -327,41 +320,160 @@ function useStageBotSize(): number {
   return size
 }
 
-function useStorySnapHandoff(active: boolean): boolean {
+function useStoryBeatSnap({
+  reduceMotion,
+  spacersRef,
+  beatIndexRef,
+  commitBeatIndex,
+  snappingRef,
+}: {
+  reduceMotion: boolean
+  spacersRef: RefObject<HTMLDivElement | null>
+  beatIndexRef: MutableRefObject<number>
+  commitBeatIndex: (next: number) => void
+  snappingRef: MutableRefObject<boolean>
+}): (index: number, options?: { immediate?: boolean }) => void {
   const lenis = useLenis()
-  const previous = useRef<{
-    smoothWheel?: boolean
-    syncTouch?: boolean
-  }>({})
+  const goToRef = useRef<
+    (index: number, options?: { immediate?: boolean }) => void
+  >(() => {})
 
   useLayoutEffect(() => {
-    if (!active) return
-
     const html = document.documentElement
     html.classList.add('pre-portfolio-snap')
 
-    if (lenis) {
-      previous.current = {
-        smoothWheel: lenis.options.smoothWheel,
-        syncTouch: lenis.options.syncTouch,
-      }
-      // Native wheel/touch so CSS `scroll-snap-stop: always` can own each beat.
-      // Lenis lerp on those gestures is what fights snap.
-      lenis.options.smoothWheel = false
-      lenis.options.syncTouch = false
+    let locked = false
+    let unlockId = 0
+    let touchAcc = 0
+
+    const yFor = (index: number): number => {
+      const el = spacersRef.current?.querySelector(
+        `[data-beat-index="${index}"]`
+      )
+      if (!(el instanceof HTMLElement)) return index * window.innerHeight
+      return el.getBoundingClientRect().top + window.scrollY
     }
+
+    const goTo = (index: number, options: { immediate?: boolean } = {}) => {
+      const next = clampBeat(index)
+      const immediate = options.immediate === true || reduceMotion
+      locked = true
+      snappingRef.current = true
+      window.clearTimeout(unlockId)
+      commitBeatIndex(next)
+      const y = yFor(next)
+      const duration = immediate ? 0 : 0.45
+
+      const unlock = () => {
+        locked = false
+        snappingRef.current = false
+      }
+
+      if (lenis) {
+        lenis.scrollTo(y, {
+          immediate,
+          duration: immediate ? undefined : duration,
+          lock: true,
+          force: true,
+          onComplete: unlock,
+        })
+      } else {
+        window.scrollTo({ top: y, behavior: 'auto' })
+        unlock()
+      }
+
+      unlockId = window.setTimeout(
+        unlock,
+        (immediate ? 0 : duration) * 1000 + 80
+      )
+    }
+
+    goToRef.current = goTo
+
+    const isInteractive = (target: EventTarget | null): boolean => {
+      if (!(target instanceof Element)) return false
+      return Boolean(target.closest('button, a, input, textarea, select'))
+    }
+
+    const onVirtual = (data: {
+      deltaY: number
+      event: Event & { lenisStopPropagation?: boolean }
+    }) => {
+      const { event, deltaY } = data
+      if (isInteractive(event.target)) return
+
+      event.lenisStopPropagation = true
+      if (event.cancelable) event.preventDefault()
+
+      const type = event.type
+      if (type === 'touchstart') {
+        touchAcc = 0
+        return
+      }
+      if (type === 'touchmove') {
+        touchAcc += deltaY
+        return
+      }
+      if (type === 'touchend') {
+        const delta = Math.abs(touchAcc) > Math.abs(deltaY) ? touchAcc : deltaY
+        touchAcc = 0
+        if (locked || Math.abs(delta) < 24) return
+        goTo(beatIndexRef.current + Math.sign(delta))
+        return
+      }
+
+      if (locked || Math.abs(deltaY) < 12) return
+      goTo(beatIndexRef.current + Math.sign(deltaY))
+    }
+
+    const onKey = (event: KeyboardEvent) => {
+      if (isInteractive(event.target) && event.key === ' ') return
+
+      switch (event.key) {
+        case 'PageDown':
+        case 'ArrowDown':
+          event.preventDefault()
+          goTo(beatIndexRef.current + 1)
+          return
+        case 'PageUp':
+        case 'ArrowUp':
+          event.preventDefault()
+          goTo(beatIndexRef.current - 1)
+          return
+        case ' ':
+          event.preventDefault()
+          goTo(beatIndexRef.current + 1)
+          return
+        default:
+          return
+      }
+    }
+
+    const onResize = () => {
+      goTo(beatIndexRef.current, { immediate: true })
+    }
+
+    lenis?.on('virtual-scroll', onVirtual)
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('resize', onResize)
 
     return () => {
       html.classList.remove('pre-portfolio-snap')
-      if (!lenis) return
-      if (previous.current.smoothWheel !== undefined) {
-        lenis.options.smoothWheel = previous.current.smoothWheel
-      }
-      if (previous.current.syncTouch !== undefined) {
-        lenis.options.syncTouch = previous.current.syncTouch
-      }
+      lenis?.off('virtual-scroll', onVirtual)
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('resize', onResize)
+      window.clearTimeout(unlockId)
     }
-  }, [active, lenis])
+  }, [
+    beatIndexRef,
+    commitBeatIndex,
+    lenis,
+    reduceMotion,
+    snappingRef,
+    spacersRef,
+  ])
 
-  return true
+  return useCallback((index: number, options?: { immediate?: boolean }) => {
+    goToRef.current(index, options)
+  }, [])
 }
