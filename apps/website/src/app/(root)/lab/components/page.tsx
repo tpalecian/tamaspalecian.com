@@ -32,6 +32,14 @@ const layoutComponents: ComponentEntry[] = [
     ],
     usedOn: '/',
   },
+  {
+    name: 'GrokBot',
+    path: 'src/components/pre-portfolio/grok-bot.tsx',
+    description:
+      'Grok-style SVG character factory: eight shapes, eleven colors, spawn/idle/blink, looped talk, and a Tamas portrait slot.',
+    props: ['character', 'className', 'reducedMotion', 'spawnKey'],
+    usedOn: '/lab/grok-bots',
+  },
 ]
 
 const infrastructure: ComponentEntry[] = [
@@ -138,6 +146,18 @@ export default function ComponentsLabPage() {
             className="rounded-md border border-border-subtle px-3 py-1.5 text-caption text-muted transition-colors hover:bg-surface-elevated"
           >
             Design tokens
+          </Link>
+          <Link
+            href="/lab/grok-bots"
+            className="rounded-md border border-border-subtle px-3 py-1.5 text-caption text-muted transition-colors hover:bg-surface-elevated"
+          >
+            Grok bots
+          </Link>
+          <Link
+            href="/lab/name-loader"
+            className="rounded-md border border-border-subtle px-3 py-1.5 text-caption text-muted transition-colors hover:bg-surface-elevated"
+          >
+            Name loader
           </Link>
           <Link
             href="/"
