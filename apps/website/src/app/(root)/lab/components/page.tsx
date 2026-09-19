@@ -30,6 +30,14 @@ const layoutComponents: ComponentEntry[] = [
       'className',
       'lineClassName',
     ],
+    usedOn: '/lab/components',
+  },
+  {
+    name: 'NameLoader',
+    path: 'src/components/pre-portfolio/name-loader.tsx',
+    description:
+      'Timed SVG liquid fill of the site name, then a dissolve to the white story stage. Scroll stays locked until it finishes.',
+    props: ['className', 'onComplete', 'reducedMotion'],
     usedOn: '/',
   },
   {
@@ -38,7 +46,23 @@ const layoutComponents: ComponentEntry[] = [
     description:
       'Grok-style SVG character factory: eight shapes, eleven colors, spawn/idle/blink, looped talk, and a Tamas portrait slot.',
     props: ['character', 'className', 'reducedMotion', 'spawnKey'],
-    usedOn: '/lab/grok-bots',
+    usedOn: '/',
+  },
+  {
+    name: 'SpeechBubble',
+    path: 'src/components/pre-portfolio/speech-bubble.tsx',
+    description:
+      'Black pill, white type. One line per story snap on the homepage stage.',
+    props: ['speaker', 'line', 'className', 'reducedMotion'],
+    usedOn: '/',
+  },
+  {
+    name: 'PrePortfolioScene',
+    path: 'src/components/pre-portfolio/pre-portfolio-scene.tsx',
+    description:
+      'Homepage director: timed loader, then a pinned white stage with one scroll-snapped beat at a time.',
+    props: ['className', 'reducedMotion'],
+    usedOn: '/',
   },
 ]
 
@@ -178,7 +202,7 @@ export default function ComponentsLabPage() {
               <LayoutGridGuide className="absolute inset-0 h-full opacity-40" />
               <div className="relative z-10 flex h-56 items-center justify-center px-gutter">
                 <p className="max-w-prose text-center text-caption text-muted">
-                  Construction grid used on the portfolio home page
+                  Construction grid overlay still used in the lab
                 </p>
               </div>
             </div>
