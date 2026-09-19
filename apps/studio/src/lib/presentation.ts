@@ -28,9 +28,7 @@ export const presentationLocations = {
     resolve: (doc) => {
       const href = resolveHref('project', doc?.slug)
       return {
-        locations: href
-          ? [{ title: doc?.title ?? 'Project', href }]
-          : [],
+        locations: href ? [{ title: doc?.title ?? 'Project', href }] : [],
       }
     },
   }),

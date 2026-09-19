@@ -1,6 +1,5 @@
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
 export const alt = 'React Developer, designer, and open source enthusiast'
 export const contentType = 'image/png'
 

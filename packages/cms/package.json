@@ -19,14 +19,14 @@
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
-    "groq": "^5.28.0",
-    "next-sanity": "^13.0.8",
-    "sanity": "^5.28.0",
-    "zod": "^4.4.3"
+    "groq": "^6.15.0",
+    "next-sanity": "^13.3.4",
+    "sanity": "^6.15.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@repo/tsconfig": "workspace:*",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
     "next": ">=16.2.6",
