@@ -383,37 +383,37 @@ export function eyeLayoutFor(
   switch (expression) {
     case 'idle':
       return {
-        tilt: -13,
-        split: 15.2,
-        width: 8.4,
-        height: 18.6,
+        tilt: -16,
+        split: 16.4,
+        width: 10.8,
+        height: 24.2,
         open: 1,
         gaze,
       }
     case 'talk':
       return {
-        tilt: -11,
-        split: 15.6,
-        width: 9.2,
-        height: 16.4,
+        tilt: -14,
+        split: 16.8,
+        width: 11.4,
+        height: 21.6,
         open: 1,
         gaze,
       }
     case 'think':
       return {
-        tilt: -8,
-        split: 14.4,
-        width: 7.6,
-        height: 20.4,
+        tilt: -10,
+        split: 15.2,
+        width: 9.2,
+        height: 26.4,
         open: 1,
         gaze: { x: gaze.x * 0.25, y: -0.72 },
       }
     case 'oops':
       return {
-        tilt: 10,
-        split: 16.8,
-        width: 12.4,
-        height: 11.2,
+        tilt: 12,
+        split: 17.6,
+        width: 14.2,
+        height: 12.8,
         open: 0.92,
         gaze: { x: 0.42, y: 0.28 },
       }

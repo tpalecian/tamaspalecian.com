@@ -18,6 +18,29 @@ import {
   type GrokCharacter,
 } from './grok-bot.ts'
 
+export type {
+  BotColorId,
+  BotExpression,
+  BotGaze,
+  BotKind,
+  BotShape,
+  EyeLayout,
+  GrokCharacter,
+} from './grok-bot.ts'
+
+export {
+  BOT_COLOR_IDS,
+  BOT_COLORS,
+  BOT_EXPRESSIONS,
+  BOT_SHAPES,
+  botBodyPath,
+  botColorHex,
+  createBot,
+  createPortrait,
+  createPrePortfolioCast,
+  eyeLayoutFor,
+} from './grok-bot.ts'
+
 export type GrokBotProps = {
   character: GrokCharacter
   className?: string
@@ -42,17 +65,17 @@ const TALK_TRANSITION: Transition = {
 }
 
 const TALK_BODY = {
-  scaleX: [1, 1.12, 0.94, 1.08, 1],
-  scaleY: [1, 0.82, 1.08, 0.88, 1],
-  rotate: [0, -5.5, 3.2, -2.4, 0],
-  y: [0, 5, -1.5, 3.5, 0],
+  scaleX: [1, 1.14, 0.92, 1.1, 1],
+  scaleY: [1, 0.78, 1.1, 0.86, 1],
+  rotate: [0, -6.5, 3.8, -2.8, 0],
+  y: [0, 6, -2, 4, 0],
 }
 
 const TALK_PORTRAIT = {
-  scaleX: [1, 1.05, 0.97, 1.04, 1],
-  scaleY: [1, 0.94, 1.04, 0.96, 1],
-  rotate: [0, -2.4, 1.6, -1.2, 0],
-  y: [0, 3, -0.8, 2, 0],
+  scaleX: [1, 1.1, 0.94, 1.07, 1],
+  scaleY: [1, 0.88, 1.08, 0.92, 1],
+  rotate: [0, -5, 3, -2, 0],
+  y: [0, 8, -2, 5, 0],
 }
 
 export function GrokBot(props: GrokBotProps) {
@@ -61,7 +84,11 @@ export function GrokBot(props: GrokBotProps) {
 
   return (
     <MotionConfig reducedMotion="never">
-      <GrokBotStage {...props} reduceMotion={reduceMotion} />
+      <GrokBotStage
+        key={`${props.character.id}-${props.spawnKey ?? 0}`}
+        {...props}
+        reduceMotion={reduceMotion}
+      />
     </MotionConfig>
   )
 }
@@ -73,12 +100,12 @@ type GrokBotStageProps = GrokBotProps & {
 function GrokBotStage({
   character,
   className,
-  spawnKey = 0,
   reduceMotion,
 }: GrokBotStageProps) {
   const { kind, expression, size, name } = character
   const isTalking = expression === 'talk'
   const [lid, setLid] = useState(1)
+  const [spawned, setSpawned] = useState(reduceMotion)
 
   useEffect(() => {
     if (reduceMotion) {
@@ -114,20 +141,31 @@ function GrokBotStage({
   }, [reduceMotion])
 
   const spawnInitial = reduceMotion
-    ? { opacity: 1, scale: 1, scaleX: 1, scaleY: 1 }
-    : { opacity: 0.2, scale: 0.42, scaleX: 0.62, scaleY: 1.28 }
+    ? { opacity: 1, scaleX: 1, scaleY: 1, rotate: 0, y: 0 }
+    : { opacity: 0.2, scaleX: 0.62, scaleY: 1.28, rotate: 0, y: 10 }
 
-  const spawnAnimate = { opacity: 1, scale: 1, scaleX: 1, scaleY: 1 }
+  const spawnSettle = { opacity: 1, scaleX: 1, scaleY: 1, rotate: 0, y: 0 }
   const motionForBody = bodyMotion(expression, reduceMotion, kind)
+  const liveAnimate = spawned
+    ? { opacity: 1, ...motionForBody.animate }
+    : spawnSettle
 
   return (
     <motion.div
-      key={`${character.id}-${spawnKey}`}
-      className={cn('relative inline-flex', className)}
-      style={{ width: size, height: size }}
+      className={cn('relative inline-flex overflow-visible', className)}
+      style={{ width: size, height: size, transformOrigin: '50% 70%' }}
       initial={spawnInitial}
-      animate={spawnAnimate}
-      transition={reduceMotion ? { duration: 0 } : SPAWN_SPRING}
+      animate={liveAnimate}
+      transition={
+        spawned
+          ? motionForBody.transition
+          : reduceMotion
+            ? { duration: 0 }
+            : SPAWN_SPRING
+      }
+      onAnimationComplete={() => {
+        setSpawned(true)
+      }}
       data-grok-bot=""
       data-character={character.id}
       data-kind={kind}
@@ -138,22 +176,15 @@ function GrokBotStage({
       role="img"
       aria-label={name}
     >
-      <motion.div
-        className="size-full"
-        animate={motionForBody.animate}
-        transition={motionForBody.transition}
-        style={{ transformOrigin: '50% 70%' }}
-      >
-        {kind === 'portrait' ? (
-          <PortraitFace character={character} />
-        ) : (
-          <BotFace
-            character={character}
-            eyeOpen={reduceMotion ? 1 : lid}
-            reduceMotion={reduceMotion}
-          />
-        )}
-      </motion.div>
+      {kind === 'portrait' ? (
+        <PortraitFace character={character} />
+      ) : (
+        <BotFace
+          character={character}
+          eyeOpen={reduceMotion ? 1 : lid}
+          reduceMotion={reduceMotion}
+        />
+      )}
     </motion.div>
   )
 }
@@ -266,7 +297,7 @@ function BotFace({
   return (
     <svg
       viewBox="0 0 100 100"
-      className="size-full overflow-visible"
+      className="block size-full overflow-visible"
       aria-hidden="true"
       focusable="false"
     >
@@ -274,10 +305,10 @@ function BotFace({
       <motion.g
         animate={{ scaleY: squeeze }}
         transition={talking ? TALK_TRANSITION : { duration: 0.16 }}
-        style={{ originX: '50px', originY: `${48 + gazeY}px` }}
+        style={{ originX: '50px', originY: `${44 + gazeY}px` }}
       >
         <g
-          transform={`translate(${50 + gazeX} ${48 + gazeY}) rotate(${layout.tilt})`}
+          transform={`translate(${50 + gazeX} ${44 + gazeY}) rotate(${layout.tilt})`}
         >
           <CapsuleEye
             x={-layout.split}
