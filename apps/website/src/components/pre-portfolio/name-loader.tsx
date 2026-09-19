@@ -151,7 +151,7 @@ export function NameLoader({
       controls.push(
         animate(fill, 1, {
           duration: FILL_DURATION_S,
-          ease: [0.22, 1, 0.36, 1],
+          ease: [0.42, 0, 0.58, 1],
           onComplete: () => {
             if (stopped) return
             setPhase('dissolving')
@@ -297,7 +297,7 @@ export function NameLoader({
           <g clipPath={`url(#${nameClipId})`}>
             <path
               ref={fillPathRef}
-              d={createLiquidFillPath(0, 0, {
+              d={createLiquidFillPath(useLiquid ? 0 : 1, 0, {
                 amplitude: useLiquid ? 7 : 0,
               })}
               className="fill-foreground"
