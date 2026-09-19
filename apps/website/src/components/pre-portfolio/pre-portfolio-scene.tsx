@@ -4,7 +4,6 @@ import { cn } from '@repo/utilities/cn'
 import { useLenis } from 'lenis/react'
 import { useReducedMotion } from 'motion/react'
 import {
-  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -22,7 +21,6 @@ import { NameLoader } from './name-loader'
 import { SpeechBubble } from './speech-bubble'
 import { STORY, type StorySpeakerId, speakersUpTo } from './story'
 import { StoryAudio } from './story-audio'
-import { StoryTimeline } from './story-timeline'
 import { useStoryClock } from './use-story-clock'
 
 export type PrePortfolioSceneProps = {
@@ -99,8 +97,7 @@ type StoryDirectorProps = {
 
 function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
   const clock = useStoryClock(reduceMotion)
-  const { beatIndex, overallProgress, status, goTo, togglePlay, skipToEnd } =
-    clock
+  const { beatIndex, status } = clock
   const lastBeatRef = useRef(beatIndex)
   const hardCutRef = useRef(false)
   if (lastBeatRef.current !== beatIndex) {
@@ -131,51 +128,6 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
       StoryAudio.stop()
     }
   }, [beatIndex, status])
-
-  const onSeek = useCallback(
-    (index: number) => {
-      goTo(index)
-    },
-    [goTo]
-  )
-
-  useEffect(() => {
-    const isInteractive = (target: EventTarget | null): boolean => {
-      if (!(target instanceof Element)) return false
-      return Boolean(target.closest('button, a, input, textarea, select'))
-    }
-
-    const onKey = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case ' ': {
-          if (isInteractive(event.target)) return
-          event.preventDefault()
-          togglePlay()
-          return
-        }
-        case 'ArrowLeft':
-          event.preventDefault()
-          goTo(beatIndex - 1)
-          return
-        case 'ArrowRight':
-          event.preventDefault()
-          goTo(beatIndex + 1)
-          return
-        case 'Escape':
-        case 'End':
-          event.preventDefault()
-          skipToEnd()
-          return
-        default:
-          return
-      }
-    }
-
-    window.addEventListener('keydown', onKey)
-    return () => {
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [beatIndex, goTo, skipToEnd, togglePlay])
 
   const beat = STORY[beatIndex] ?? STORY[0]
   const visibleIds = speakersUpTo(beatIndex)
@@ -237,18 +189,6 @@ function StoryDirector({ className, reduceMotion }: StoryDirectorProps) {
               )
             })}
           </ul>
-        </div>
-
-        <div className="flex shrink-0 justify-center px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <StoryTimeline
-            beatIndex={beatIndex}
-            overallProgress={overallProgress}
-            status={status}
-            reduceMotion={reduceMotion}
-            onTogglePlay={togglePlay}
-            onSeek={onSeek}
-            onSkip={skipToEnd}
-          />
         </div>
       </div>
     </main>

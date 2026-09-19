@@ -64,22 +64,6 @@ const layoutComponents: ComponentEntry[] = [
     props: ['className', 'reducedMotion'],
     usedOn: '/',
   },
-  {
-    name: 'StoryTimeline',
-    path: 'src/components/pre-portfolio/story-timeline.tsx',
-    description:
-      'Play/pause, clickable beat progress, and skip for the homepage story clock.',
-    props: [
-      'beatIndex',
-      'overallProgress',
-      'status',
-      'reduceMotion',
-      'onTogglePlay',
-      'onSeek',
-      'onSkip',
-    ],
-    usedOn: '/',
-  },
 ]
 
 const infrastructure: ComponentEntry[] = [
