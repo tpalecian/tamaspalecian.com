@@ -1,0 +1,45 @@
+---
+description: How agents and contributors should approach changes in this repo
+alwaysApply: true
+---
+
+# Agent conduct
+
+## Scope and quality
+
+1. **Minimize diff** — solve the task with the smallest correct change. Do not refactor, rename, or "improve" unrelated code.
+2. **Read before writing** — match naming, imports, component structure, and patterns in the surrounding files.
+3. **Reuse, don't reinvent** — extend existing helpers (`cn`, `sanityFetch`, design tokens) before adding new abstractions.
+4. **No over-engineering** — no premature abstractions, excessive error handling, or one-off helpers.
+5. **Comments sparingly** — only for non-obvious business logic; code should be self-explanatory.
+
+## Verification before done
+
+From repo root, run and fix failures:
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm build
+```
+
+For CMS schema changes, also run `pnpm cms:typegen` and commit generated output.
+
+For UI changes, verify in the browser and include screenshots or recordings in the PR.
+
+## Package boundaries
+
+| Put it here | Not here |
+|-------------|----------|
+| Schemas, GROQ, client in `packages/cms` | Sanity schemas in `apps/website` |
+| Studio plugins/config in `apps/studio` | Studio-only code in `@repo/cms` |
+| Lenis/Motion infra in `packages/ui` | App-specific page UI in `@repo/ui` |
+| Page routes/components in `apps/website` | Website pages in packages |
+
+## What not to do
+
+- Do not push directly to `main` — always use a PR.
+- Do not add ESLint or Prettier — Biome is the toolchain.
+- Do not bypass `isSanityConfigured()` guards when Sanity env is missing.
+- Do not use `any` to silence type errors — fix the types or run typegen.
+- Do not create markdown files unless explicitly requested.

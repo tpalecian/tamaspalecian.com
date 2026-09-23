@@ -1,0 +1,33 @@
+---
+description: Accessibility patterns for UI components and animations
+alwaysApply: false
+---
+
+# Accessibility
+
+## Motion
+
+- Honor `prefers-reduced-motion: reduce` — disable parallax, smooth scroll overrides, and entrance animations.
+- Provide skip buttons for timed overlays (see `intro-skip.tsx`).
+- Do not rely on motion alone to convey information.
+
+## Semantic HTML
+
+- Use correct heading hierarchy (`h1` once per page).
+- Interactive elements must be `<button>` or `<a>`, not `<div onClick>`.
+- Images require meaningful `alt` text — enforce in CMS schema validation where possible.
+
+## Focus and keyboard
+
+- All interactive controls must be keyboard reachable.
+- Visible focus styles — do not remove outlines without a replacement.
+- Skip links for main content when navigation is complex.
+
+## Color and contrast
+
+- Use semantic tokens from `src/styles/tokens/semantic.css` — they support light/dark.
+- Do not convey state by color alone; pair with text or icons.
+
+## Lab pages
+
+`/lab/*` routes are `noindex` — fine for internal reference, but still follow a11y for dev testing.

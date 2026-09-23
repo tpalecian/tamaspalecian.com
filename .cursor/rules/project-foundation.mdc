@@ -1,0 +1,53 @@
+---
+description: Monorepo structure, package boundaries, and tooling baseline
+alwaysApply: true
+---
+
+# Project foundation
+
+Turborepo monorepo (pnpm workspaces). Inspired by [darkroomengineering/satus](https://github.com/darkroomengineering/satus).
+
+## Structure
+
+```
+apps/
+  website/   @repo/website   Next.js 16 site (localhost:3000)
+  studio/    @repo/studio    Sanity Studio (localhost:3333)
+
+packages/
+  cms/       @repo/cms       Portable Sanity layer (schemas, GROQ, client, live)
+  ui/        @repo/ui        Cross-app UI primitives (Lenis smooth scroll)
+  utilities/ @repo/utilities Shared helpers (cn)
+  tsconfig/  @repo/tsconfig  TypeScript configs
+```
+
+Workspace names use **kebab-case**. Studio config (`sanity.config.ts`, plugins) lives in `apps/studio`. `@repo/cms` is only the portable data layer consumed by both apps.
+
+## Imports
+
+```ts
+// Workspace packages — use subpath exports
+import { cn } from '@repo/utilities/cn'
+import { sanityFetch } from '@repo/cms'
+import { SmoothScrollProvider } from '@repo/ui'
+
+// App-local aliases (website)
+import { ParallaxSection } from '@/components/effects/parallax-section'
+```
+
+## Commands (run from repo root)
+
+| Command | Purpose |
+|---------|---------|
+| `pnpm dev` | website + studio |
+| `pnpm lint` / `pnpm lint:fix` | Biome check across packages |
+| `pnpm typecheck` | TypeScript via Turbo |
+| `pnpm build` | Production build |
+| `pnpm cms:typegen` | Regenerate Sanity types after schema changes |
+
+## Tooling
+
+- **Package manager:** pnpm 10 (never npm/yarn)
+- **Lint/format:** Biome (single quotes, semicolons as needed, sorted Tailwind classes)
+- **Commits:** Conventional Commits via commitlint + Husky
+- **CI target:** lint, typecheck, build must pass before merge

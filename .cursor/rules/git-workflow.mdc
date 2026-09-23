@@ -1,0 +1,47 @@
+---
+description: Branch naming, conventional commits, and PR workflow
+alwaysApply: true
+---
+
+# Git workflow
+
+All changes land on `main` through pull requests — never push directly to `main`.
+
+## Branch naming
+
+Lowercase kebab-case with a type prefix:
+
+| Prefix | Use for |
+|--------|---------|
+| `feature/` | New functionality |
+| `fix/` | Bug fixes |
+| `chore/` | Tooling, deps, config |
+| `docs/` | Documentation only |
+| `refactor/` | Behavior-neutral restructure |
+| `ci/` | CI/CD changes |
+
+Cursor Cloud Agent branches: `agentic<description>-69a1`.
+
+## Conventional commits
+
+Format: `<type>(<optional scope>): <imperative description>`
+
+Scopes: `website`, `studio`, `cms`, `ui`.
+
+```
+feat(website): add work page project grid
+fix(cms): require alt text on project images
+chore: add cursor rules foundation
+```
+
+Rules: imperative mood, ≤ 72 chars, no trailing period. Validated by commitlint on every commit.
+
+## Pull requests
+
+1. Rebase or merge latest `main` before opening.
+2. Fill in the PR template completely.
+3. One logical change per PR when possible.
+4. Include screenshots/recordings for UI changes.
+5. Commit `pnpm cms:typegen` output in the same PR as schema changes.
+
+See `CONTRIBUTING.md` for full details.

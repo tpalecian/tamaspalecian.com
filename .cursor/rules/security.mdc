@@ -1,0 +1,28 @@
+---
+description: Security headers, env vars, secrets, and CSP considerations
+alwaysApply: false
+---
+
+# Security
+
+## Environment variables
+
+- Never commit secrets. Use `.env.local` (gitignored). Reference `.env.example` for required keys.
+- Sanity tokens (`SANITY_API_READ_TOKEN`, etc.) are server-only — never expose in client bundles.
+- `SANITY_REVALIDATE_SECRET` is for webhook revalidation routes — validate on incoming requests.
+
+## Headers (`apps/website/next.config.mjs`)
+
+Security headers are intentional: CSP, HSTS, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`.
+
+**Caution:** `X-Frame-Options: DENY` may block Sanity Presentation iframe in production. If visual editing breaks in prod, adjust frame policy for draft/preview routes only — do not remove headers globally.
+
+## CMS content
+
+- Validate and sanitize user-facing CMS output. Use Portable Text renderer, not `dangerouslySetInnerHTML`.
+- Image URLs should come from Sanity CDN (`cdn.sanity.io`), not arbitrary external URLs.
+
+## Dependencies
+
+- Pin critical versions at root when needed (e.g. `next` override in root `package.json`).
+- Do not add packages without checking existing workspace deps first.

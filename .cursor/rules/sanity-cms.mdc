@@ -1,0 +1,61 @@
+---
+description: Sanity schemas, GROQ queries, typegen, and data layer patterns
+globs: packages/cms/**
+alwaysApply: false
+---
+
+# CMS package (`@repo/cms`)
+
+Portable Sanity data layer — schemas, queries, client, and live preview. No Studio UI or plugins here.
+
+## Exports
+
+| Subpath | Module |
+|---------|--------|
+| `@repo/cms` | index |
+| `@repo/cms/client` | Sanity client |
+| `@repo/cms/env` | `isSanityConfigured()` |
+| `@repo/cms/live` | `sanityFetch`, `SanityLive` |
+| `@repo/cms/queries` | GROQ queries |
+| `@repo/cms/schemas` | Schema definitions |
+
+## Schema conventions
+
+- Use `defineType` + `defineField` from `sanity`.
+- File names: kebab-case (`site-settings.ts`). Export names: camelCase (`siteSettings`).
+- Add `validation: (Rule) => Rule.required()` on title and slug fields.
+- Include `preview` config and `orderings` on listable documents.
+- Register new types in `src/schemas/index.ts`.
+
+## GROQ queries
+
+Always use `defineQuery` from `next-sanity` for typegen compatibility:
+
+```ts
+export const projectQuery = defineQuery(`
+  *[_type == "project" && slug.current == $slug][0] { ... }
+`)
+```
+
+When adding or changing a query field list, update the corresponding schema if needed.
+
+## Typegen (required for schema changes)
+
+```bash
+pnpm cms:typegen
+```
+
+Config: `packages/cms/sanity-typegen.json` → generates `src/sanity.types.ts`.
+
+After schema changes:
+1. Run typegen.
+2. Commit `schema.json` and `sanity.types.ts` together with schema edits.
+3. Prefer generated types over manual casts from `types.ts`.
+
+## Env
+
+`isSanityConfigured()` checks `projectId` and `dataset`. Never hardcode Sanity project IDs in source.
+
+## Images
+
+Use `@sanity/image-url` helpers when building image URLs. Featured images should have alt text validation where applicable.
