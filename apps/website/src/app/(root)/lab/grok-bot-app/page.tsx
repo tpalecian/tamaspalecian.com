@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { GrokBotApp } from '@/components/grok-bot-app/grok-bot-app'
-import { talentScoutSnapshot } from '@/components/grok-bot-app/grok-bot-app-data'
+import { grokBotAppSnapshot } from '@/components/grok-bot-app/grok-bot-app-data'
 
 export const metadata: Metadata = {
   title: 'Grok bot app',
@@ -18,8 +18,9 @@ export default function GrokBotAppLabPage() {
           Grok bot app
         </h1>
         <p className="mt-stack text-body-lg text-muted">
-          Static UI recreation of the Grok bot desktop app. Components only;
-          behavior comes later.{' '}
+          Interactive UI recreation of the Grok bot desktop app: resize or
+          collapse the sidebar, open an agent&apos;s computer and settings, or
+          add a new agent.{' '}
           <Link
             href="/lab/components"
             className="text-accent underline-offset-2 hover:underline"
@@ -29,7 +30,7 @@ export default function GrokBotAppLabPage() {
         </p>
       </header>
       <div className="mt-stack-xl">
-        <GrokBotApp {...talentScoutSnapshot} />
+        <GrokBotApp {...grokBotAppSnapshot} />
       </div>
     </main>
   )

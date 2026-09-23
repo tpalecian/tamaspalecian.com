@@ -1,9 +1,7 @@
-import type { GrokBotAppProps } from './grok-bot-app-types'
 import { MicIcon, PlusIcon } from './icons'
 
 type ComposerProps = {
   placeholder: string
-  onSend?: GrokBotAppProps['onSend']
 }
 
 export function Composer({ placeholder }: ComposerProps) {

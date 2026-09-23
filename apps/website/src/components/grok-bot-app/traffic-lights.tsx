@@ -12,7 +12,7 @@ export function TrafficLights({ className }: TrafficLightsProps) {
     <div
       aria-hidden="true"
       className={cn(
-        'absolute top-[18px] left-4 flex w-[52px] items-center justify-between',
+        'absolute top-[18px] left-3.5 flex w-[48px] items-center justify-between',
         className
       )}
     >

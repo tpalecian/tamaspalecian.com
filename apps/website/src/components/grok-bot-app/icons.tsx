@@ -65,6 +65,41 @@ export function PlusIcon({ size = 14, className }: IconProps) {
   )
 }
 
+export function SettingsIcon({ size = 14, className }: IconProps) {
+  return (
+    <IconGlyph size={size} className={className}>
+      <path d="M10.3 3.9a1.7 1.7 0 0 1 3.4 0l.1.7a1.7 1.7 0 0 0 2.5 1.1l.6-.4a1.7 1.7 0 0 1 2.4 2.4l-.4.6a1.7 1.7 0 0 0 1.1 2.5l.7.1a1.7 1.7 0 0 1 0 3.4l-.7.1a1.7 1.7 0 0 0-1.1 2.5l.4.6a1.7 1.7 0 0 1-2.4 2.4l-.6-.4a1.7 1.7 0 0 0-2.5 1.1l-.1.7a1.7 1.7 0 0 1-3.4 0l-.1-.7a1.7 1.7 0 0 0-2.5-1.1l-.6.4a1.7 1.7 0 0 1-2.4-2.4l.4-.6a1.7 1.7 0 0 0-1.1-2.5l-.7-.1a1.7 1.7 0 0 1 0-3.4l.7-.1a1.7 1.7 0 0 0 1.1-2.5l-.4-.6a1.7 1.7 0 0 1 2.4-2.4l.6.4a1.7 1.7 0 0 0 2.5-1.1Z" />
+      <circle cx="12" cy="12" r="3" />
+    </IconGlyph>
+  )
+}
+
+export function CloseIcon({ size = 14, className }: IconProps) {
+  return (
+    <IconGlyph size={size} className={className}>
+      <path d="M6 6l12 12" />
+      <path d="M18 6 6 18" />
+    </IconGlyph>
+  )
+}
+
+export function ChevronLeftIcon({ size = 14, className }: IconProps) {
+  return (
+    <IconGlyph size={size} className={className}>
+      <path d="m15 5-7 7 7 7" />
+    </IconGlyph>
+  )
+}
+
+export function ClockIcon({ size = 14, className }: IconProps) {
+  return (
+    <IconGlyph size={size} className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </IconGlyph>
+  )
+}
+
 export function MicIcon({ size = 14, className }: IconProps) {
   return (
     <IconGlyph size={size} className={className}>

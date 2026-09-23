@@ -5,13 +5,30 @@ export type BotMarkConfig = {
   shape: BotMarkShape
 }
 
+export type GrokBotRoutine = {
+  id: string
+  name: string
+  schedule: string
+}
+
 export type GrokBotAgent = BotMarkConfig & {
   id: string
   name: string
   time: string
   preview: string
   group?: BotMarkConfig[]
+  title?: string
+  description?: string
+  notifications?: boolean
+  unread?: boolean
+  bubble?: string
+  routines?: GrokBotRoutine[]
 }
+
+export type GrokBotAgentSettings = Pick<
+  GrokBotAgent,
+  'name' | 'title' | 'description' | 'notifications'
+>
 
 export type GrokBotTextPart = {
   text: string
@@ -38,17 +55,14 @@ export type GrokBotUser = {
   initials: string
 }
 
+export type GrokBotPanel = 'none' | 'computer' | 'settings'
+
 export type GrokBotAppProps = {
   agents: GrokBotAgent[]
-  activeAgentId: string
-  messages: GrokBotMessage[]
+  threads: Record<string, GrokBotMessage[]>
+  defaultActiveAgentId: string
   user: GrokBotUser
-  composerPlaceholder?: string
+  defaultSidebarWidth?: number
   height?: number
   className?: string
-  onSelectAgent?: (id: string) => void
-  onNewAgent?: () => void
-  onSearchChange?: (value: string) => void
-  onOpenComputer?: () => void
-  onSend?: (text: string) => void
 }

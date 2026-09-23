@@ -200,6 +200,13 @@ export function Transcript({ messages }: TranscriptProps) {
 
   return (
     <div className="grok-bot-app-scroll flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pt-2 pb-12">
+      {messages.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-[13px] text-[var(--cursor-text-secondary)] leading-[18px]">
+            No messages yet
+          </p>
+        </div>
+      ) : null}
       <div className="flex flex-col gap-1">
         {entries.map((entry) => {
           switch (entry.kind) {
