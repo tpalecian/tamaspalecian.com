@@ -1,0 +1,41 @@
+.grok-bot-app {
+  color-scheme: light;
+  --grok-bot-current-agent-bubble: #3c82f6;
+  --grok-bot-current-agent-bubble-ink: #ffffff;
+  --grok-bot-current-agent-bubble-coat: #3c82f6;
+  --grok-bot-bg-editor: #ffffff;
+  --grok-bot-sidebar-bg: #f7f7f8;
+  --grok-bot-sidebar-hover: rgba(0, 0, 0, 0.04);
+  --grok-bot-sidebar-selected: rgba(0, 0, 0, 0.07);
+  --grok-bot-sidebar-text-primary: #141414;
+  --grok-bot-sidebar-text-secondary: #6b6b6b;
+  --grok-bot-sidebar-text-tertiary: #9a9a9a;
+  --grok-bot-border-default: rgba(0, 0, 0, 0.1);
+  --grok-bot-bubble-user: var(--grok-bot-current-agent-bubble);
+  --grok-bot-bubble-user-ink: #ffffff;
+  --grok-bot-bubble-agent: #f1f1f2;
+  --grok-bot-fill-secondary: rgba(0, 0, 0, 0.05);
+  --grok-bot-fill-emphasis: var(--grok-bot-current-agent-bubble);
+  --grok-bot-toolbar-height: 44px;
+  --cursor-text-primary: #141414;
+  --cursor-text-secondary: #6b6b6b;
+}
+
+.grok-bot-app-composer-fade {
+  background: linear-gradient(to top, var(--grok-bot-bg-editor), transparent);
+}
+
+.grok-bot-app-composer-field[data-empty]::before {
+  content: attr(data-placeholder);
+  color: var(--cursor-text-secondary);
+}
+
+.grok-bot-app-scroll {
+  scrollbar-width: none;
+}
+
+.grok-bot-app-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

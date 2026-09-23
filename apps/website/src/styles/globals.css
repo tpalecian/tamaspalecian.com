@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./tokens/index.css";
 @import "./intro.css";
+@import "./grok-bot-app.css";
 
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
 
