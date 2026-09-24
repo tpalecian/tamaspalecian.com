@@ -8,16 +8,11 @@ import { useEffect, useState } from 'react'
 
 import { BotMark } from '@/components/grok-bot-app/bot-mark'
 import {
+  BOT_MARK_SHAPES,
   BOT_MARK_STATES,
   type BotMarkShape,
   type BotMarkState,
 } from '@/components/grok-bot-app/grok-bot-app-types'
-
-const MARK_SHAPES = [
-  'blob',
-  'triangle',
-  'squircle',
-] as const satisfies readonly BotMarkShape[]
 
 const MARK_COLORS = [
   '#54B9A6',
@@ -29,13 +24,13 @@ const MARK_COLORS = [
 ] as const
 
 const STATE_CAPTIONS = {
-  idle: 'Calm and slightly curious.',
-  acknowledge: 'A nod when work arrives.',
-  thinking: 'Looks up while it works something out.',
-  working: 'Kicks into gear.',
-  waiting: 'Glances around, waiting on someone else.',
-  blocked: 'Needs help.',
-  done: 'Settles, then rests.',
+  idle: 'Calm sway, with a blink.',
+  acknowledge: 'Nods when work arrives.',
+  thinking: 'Leans in. The eyes tighten into dots.',
+  working: 'Small, quick bounce while it works.',
+  waiting: 'Droops and looks aside.',
+  blocked: 'Pops an alert and asks for help.',
+  done: 'Opens up, bounces, then spins.',
 } as const satisfies Record<BotMarkState, string>
 
 const TOUR_INTERVAL_MS = 2400
@@ -150,7 +145,7 @@ export function GrokBotLabView() {
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
-          {MARK_SHAPES.map((markShape) => (
+          {BOT_MARK_SHAPES.map((markShape) => (
             <button
               key={markShape}
               type="button"

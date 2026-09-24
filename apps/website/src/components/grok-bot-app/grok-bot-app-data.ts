@@ -30,7 +30,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       time: '3:39 PM',
       preview: 'Done.',
       color: '#F19D38',
-      shape: 'blob',
+      shape: 'cloud',
       state: 'working',
       title: 'Sales',
       description:
@@ -85,7 +85,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       time: '7:40 AM',
       preview: '3 intros drafted in your voice, held for your ok.',
       color: '#3C82F6',
-      shape: 'blob',
+      shape: 'pebble',
       state: 'thinking',
       title: 'Recruiting',
       description:
@@ -105,7 +105,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       time: '11:40 AM',
       preview: 'report filed. 9 receipts, nothing outstanding.',
       color: '#ED712E',
-      shape: 'blob',
+      shape: 'tablet',
       state: 'acknowledge',
       title: 'Expenses',
       description:
@@ -133,8 +133,8 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       notifications: true,
       group: [
         { color: '#54B9A6', shape: 'blob' },
-        { color: '#6464EF', shape: 'blob' },
-        { color: '#885CF5', shape: 'blob' },
+        { color: '#6464EF', shape: 'hex' },
+        { color: '#885CF5', shape: 'teardrop' },
       ],
     },
   ],

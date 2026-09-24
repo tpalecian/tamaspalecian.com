@@ -1,4 +1,15 @@
-export type BotMarkShape = 'blob' | 'triangle' | 'squircle'
+export const BOT_MARK_SHAPES = [
+  'blob',
+  'pebble',
+  'squircle',
+  'tablet',
+  'triangle',
+  'hex',
+  'cloud',
+  'teardrop',
+] as const
+
+export type BotMarkShape = (typeof BOT_MARK_SHAPES)[number]
 
 /**
  * Avatar motion from the Grok Bot lifecycle: calm at rest, a nod when work

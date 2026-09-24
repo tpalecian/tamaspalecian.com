@@ -1,63 +1,28 @@
 'use client'
 
 import { cn } from '@repo/utilities/cn'
-import {
-  MotionConfig,
-  motion,
-  type Transition,
-  useReducedMotion,
-} from 'motion/react'
-import { useEffect, useId, useState } from 'react'
+import { useReducedMotion } from 'motion/react'
+import { useEffect, useId, useRef } from 'react'
 
+import { BOT_EYE_GLYPHS } from './bot-mark-eyes'
 import {
-  BOT_MARK_EYE_PATHS,
-  BOT_MARK_HEAD_PATHS,
-  botMarkEyeOffset,
-} from './bot-mark-paths'
+  BOT_MARK_BANG_PATH,
+  BOT_MARK_CENTER,
+  botMarkGeometry,
+  eyeOutlinePath,
+} from './bot-mark-geometry'
+import { botFrame, thinkingLift } from './bot-mark-motion'
 import type {
   BotMarkConfig,
   BotMarkShape,
   BotMarkState,
 } from './grok-bot-app-types'
 
-const MotionG = motion.create('g')
-
-const MARK_TRANSFORM =
-  'translate(114.2705 114.2705) scale(1.0405) translate(-114.2705 -114.2705)'
-
 const STACK_SLOTS = [
   { left: 7, top: 0, zIndex: 1 },
   { left: 0, top: 14, zIndex: 2 },
   { left: 14, top: 14, zIndex: 3 },
 ] as const
-
-const NOD_EASE = [0.22, 1, 0.36, 1] as const
-const WORK_EASE = [0.37, 0.02, 0.22, 1] as const
-const WAITING_DURATION = 2.6
-const STILL_TRANSITION: Transition = { duration: 0 }
-
-const REST_POSE = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scaleX: 1,
-  scaleY: 1,
-}
-
-type BodyChannel = number | number[]
-
-type BodyTarget = {
-  x: BodyChannel
-  y: BodyChannel
-  rotate: BodyChannel
-  scaleX: BodyChannel
-  scaleY: BodyChannel
-}
-
-type BodyMotion = {
-  animate: BodyTarget
-  transition: Transition
-}
 
 type BotMarkProps = {
   color: string
@@ -80,273 +45,37 @@ type AgentAvatarProps = {
   size: number
 }
 
-function randomBetween(min: number, max: number): number {
-  return min + Math.random() * (max - min)
+type EyeGlyph = readonly (readonly [number, number])[]
+
+function glyphFor(expression: number, eyeIndex: 0 | 1): EyeGlyph {
+  return (
+    BOT_EYE_GLYPHS[expression]?.[eyeIndex] ??
+    BOT_EYE_GLYPHS[0]?.[eyeIndex] ??
+    []
+  )
 }
 
-function channelStart(channel: BodyChannel): number {
-  return typeof channel === 'number' ? channel : channel[0]
+function mixGlyphs(
+  from: EyeGlyph,
+  to: EyeGlyph,
+  mix: number
+): readonly [number, number][] {
+  if (mix <= 0 || from.length !== to.length)
+    return from.map((point) => [point[0], point[1]])
+  return from.map((point, index) => {
+    const next = to[index] ?? point
+    return [
+      point[0] + (next[0] - point[0]) * mix,
+      point[1] + (next[1] - point[1]) * mix,
+    ]
+  })
 }
 
-function poseStart(target: BodyTarget): BodyTarget {
-  return {
-    x: channelStart(target.x),
-    y: channelStart(target.y),
-    rotate: channelStart(target.rotate),
-    scaleX: channelStart(target.scaleX),
-    scaleY: channelStart(target.scaleY),
-  }
-}
-
-/**
- * First blink after 0.9–2.4s, held for 120ms, then every 2.2–4.8s.
- * 18% of blinks are followed by a second blink 180ms later.
- */
-function useEyeBlink(reduced: boolean): boolean {
-  const [blink, setBlink] = useState(false)
-
-  useEffect(() => {
-    if (reduced) {
-      setBlink(false)
-      return
-    }
-
-    let cancelled = false
-    const timeouts: Array<ReturnType<typeof setTimeout>> = []
-
-    const later = (ms: number, run: () => void) => {
-      const id = setTimeout(() => {
-        if (!cancelled) run()
-      }, ms)
-      timeouts.push(id)
-    }
-
-    const schedule = (delay: number) => {
-      later(delay, () => {
-        setBlink(true)
-        later(120, () => {
-          setBlink(false)
-          const queueNext = () => {
-            schedule(randomBetween(2200, 4800))
-          }
-          if (Math.random() < 0.18) {
-            later(180, () => {
-              setBlink(true)
-              later(120, () => {
-                setBlink(false)
-                queueNext()
-              })
-            })
-          } else {
-            queueNext()
-          }
-        })
-      })
-    }
-
-    schedule(randomBetween(900, 2400))
-
-    return () => {
-      cancelled = true
-      for (const id of timeouts) clearTimeout(id)
-    }
-  }, [reduced])
-
-  return reduced ? false : blink
-}
-
-function reducedPose(state: BotMarkState): BodyTarget {
-  switch (state) {
-    case 'idle':
-      return REST_POSE
-    case 'acknowledge':
-      return { ...REST_POSE, rotate: 2 }
-    case 'thinking':
-      return { ...REST_POSE, rotate: -9, y: -3 }
-    case 'working':
-      return { ...REST_POSE, scaleX: 1.06, scaleY: 0.94 }
-    case 'waiting':
-      return { ...REST_POSE, rotate: -6 }
-    case 'blocked':
-      return { ...REST_POSE, rotate: 8, scaleX: 1.08, scaleY: 0.9 }
-    case 'done':
-      return REST_POSE
-    default: {
-      const exhaustive: never = state
-      return exhaustive
-    }
-  }
-}
-
-function bodyMotion(state: BotMarkState, reduced: boolean): BodyMotion {
-  if (reduced) {
-    return { animate: reducedPose(state), transition: STILL_TRANSITION }
-  }
-
-  switch (state) {
-    case 'idle':
-      return {
-        animate: {
-          x: 0,
-          y: [0, -1.5, 0.4, 0],
-          rotate: [0, -2.4, 1.6, 0],
-          scaleX: [1, 0.985, 1.012, 1],
-          scaleY: [1, 1.04, 0.99, 1],
-        },
-        transition: { duration: 3.6, ease: 'easeInOut', repeat: Infinity },
-      }
-    case 'acknowledge':
-      return {
-        animate: {
-          x: 0,
-          y: [0, 5, -2, 0],
-          rotate: [0, 10, -3, 2],
-          scaleX: [1, 1.1, 0.98, 1],
-          scaleY: [1, 0.86, 1.06, 1],
-        },
-        transition: {
-          duration: 0.7,
-          ease: NOD_EASE,
-          times: [0, 0.35, 0.7, 1],
-        },
-      }
-    case 'thinking':
-      return {
-        animate: {
-          x: 0,
-          y: [-2, -5, -2],
-          rotate: -9,
-          scaleX: [1, 0.99, 1],
-          scaleY: [1, 1.045, 1],
-        },
-        transition: { duration: 2.8, ease: 'easeInOut', repeat: Infinity },
-      }
-    case 'working':
-      return {
-        animate: {
-          x: 0,
-          y: [0, 4, -1, 2, 0],
-          rotate: [0, -7, 4.2, -3, 0],
-          scaleX: [1, 1.16, 0.9, 1.12, 1],
-          scaleY: [1, 0.76, 1.12, 0.84, 1],
-        },
-        transition: {
-          duration: 0.46,
-          ease: WORK_EASE,
-          times: [0, 0.22, 0.5, 0.76, 1],
-          repeat: Infinity,
-        },
-      }
-    case 'waiting':
-      return {
-        animate: {
-          x: [-3, 3, -3],
-          y: 0,
-          rotate: [-6, 6, -6],
-          scaleX: 1,
-          scaleY: [1, 1.02, 1],
-        },
-        transition: {
-          duration: WAITING_DURATION,
-          ease: 'easeInOut',
-          repeat: Infinity,
-        },
-      }
-    case 'blocked':
-      return {
-        animate: {
-          x: 0,
-          y: [0, 1, 0, 1, 0],
-          rotate: [7, 11, 5, 10, 7],
-          scaleX: 1.08,
-          scaleY: 0.9,
-        },
-        transition: { duration: 0.55, repeat: Infinity },
-      }
-    case 'done':
-      return {
-        animate: {
-          x: 0,
-          y: [5, -4, 1, 0, 0],
-          rotate: [5, -2, 1, 0, 0],
-          scaleX: [1.12, 0.94, 1.04, 1, 1],
-          scaleY: [0.84, 1.1, 0.97, 1, 1],
-        },
-        transition: {
-          duration: 1.8,
-          ease: 'easeOut',
-          times: [0, 0.2, 0.38, 0.55, 1],
-          repeat: Infinity,
-        },
-      }
-    default: {
-      const exhaustive: never = state
-      return exhaustive
-    }
-  }
-}
-
-function eyeSquint(state: BotMarkState): number {
-  switch (state) {
-    case 'working':
-      return 0.72
-    case 'done':
-      return 0.88
-    case 'idle':
-    case 'acknowledge':
-    case 'thinking':
-    case 'waiting':
-    case 'blocked':
-      return 1
-    default: {
-      const exhaustive: never = state
-      return exhaustive
-    }
-  }
-}
-
-function eyeGaze(state: BotMarkState, reduced: boolean): BodyTarget {
-  switch (state) {
-    case 'idle':
-      return { ...REST_POSE, x: 6, y: -4 }
-    case 'acknowledge':
-      return { ...REST_POSE, x: 0, y: 6 }
-    case 'thinking':
-      return { ...REST_POSE, x: -4, y: -16 }
-    case 'working':
-      return { ...REST_POSE, x: 0, y: 2 }
-    case 'waiting':
-      if (reduced) return { ...REST_POSE, x: -14, y: 0 }
-      return { ...REST_POSE, x: [-14, 14, -14], y: 0 }
-    case 'blocked':
-      return { ...REST_POSE, x: 10, y: -10 }
-    case 'done':
-      return { ...REST_POSE, x: 0, y: 2 }
-    default: {
-      const exhaustive: never = state
-      return exhaustive
-    }
-  }
-}
-
-function eyeTransition(
-  state: BotMarkState,
-  reduced: boolean,
-  blink: boolean
-): Transition {
-  const duration = blink ? 0.07 : 0.35
-  if (state === 'waiting' && !reduced) {
-    return {
-      x: {
-        duration: WAITING_DURATION,
-        ease: 'easeInOut',
-        repeat: Infinity,
-      },
-      y: { duration },
-      scaleY: { duration },
-    }
-  }
-  return { duration }
+function restingEyePath(shape: BotMarkShape, eyeIndex: 0 | 1): string {
+  const geometry = botMarkGeometry(shape)
+  const anchor = geometry.eyes[eyeIndex]
+  const glyph = glyphFor(0, eyeIndex)
+  return eyeOutlinePath(glyph, anchor, 1, 1, 0, 0)
 }
 
 export function BotMark({
@@ -358,15 +87,94 @@ export function BotMark({
   reducedMotion,
 }: BotMarkProps) {
   const clipPathId = useId().replaceAll(':', '')
-  const offset = botMarkEyeOffset(shape)
-  const head = BOT_MARK_HEAD_PATHS[shape]
+  const geometry = botMarkGeometry(shape)
+  const bodyRef = useRef<SVGGElement>(null)
+  const leftEyeRef = useRef<SVGPathElement>(null)
+  const rightEyeRef = useRef<SVGPathElement>(null)
+  const bangRef = useRef<SVGPathElement>(null)
   const prefersReducedMotion = useReducedMotion()
   const reduced = reducedMotion ?? prefersReducedMotion === true
-  const blink = useEyeBlink(reduced)
-  const body = bodyMotion(state, reduced)
-  const gaze = eyeGaze(state, reduced)
-  const squint = eyeSquint(state)
-  const eyeScaleY = blink ? 0.08 : squint
+
+  useEffect(() => {
+    const body = bodyRef.current
+    const leftEye = leftEyeRef.current
+    const rightEye = rightEyeRef.current
+    const bang = bangRef.current
+    if (!body || !leftEye || !rightEye || !bang) return
+
+    const anchors = geometry.eyes
+    const eyes = [leftEye, rightEye]
+    let gazeX = 0
+    let gazeY = 0
+
+    const draw = (seconds: number) => {
+      const frame = botFrame(state, seconds, reduced)
+      gazeX += (frame.gazeX - gazeX) * (reduced ? 1 : 0.08)
+      gazeY += (frame.gazeY - gazeY) * (reduced ? 1 : 0.08)
+      body.setAttribute(
+        'transform',
+        `translate(${BOT_MARK_CENTER + frame.x} ${BOT_MARK_CENTER + frame.y}) rotate(${frame.rotate}) scale(1 ${frame.scaleY}) translate(${-BOT_MARK_CENTER} ${-BOT_MARK_CENTER})`
+      )
+
+      for (let index = 0; index < eyes.length; index++) {
+        const eye = eyes[index]
+        const anchor = anchors[index]
+        if (!eye || !anchor) continue
+        const eyeIndex = index === 0 ? 0 : 1
+        const glyph = mixGlyphs(
+          glyphFor(frame.expression, eyeIndex),
+          glyphFor(frame.expressionNext, eyeIndex),
+          frame.expressionMix
+        )
+        const dot = frame.thinking
+        const pulse = dot > 0 ? thinkingLift(seconds, index) : 0
+        const scale =
+          frame.eyeScale *
+          (dot > 0 ? 1 - dot * 0.78 : 1) *
+          (1 + pulse * 0.04 * dot)
+        const shiftX = Math.min(8, Math.max(-8, gazeX * anchor.scale * 0.45))
+        const shiftY = Math.min(8, Math.max(-8, gazeY * anchor.scale * 0.45))
+        eye.setAttribute(
+          'd',
+          eyeOutlinePath(
+            glyph,
+            anchor,
+            scale,
+            scale * frame.eyeOpen,
+            shiftX,
+            shiftY - pulse * dot
+          )
+        )
+      }
+
+      if (frame.bang <= 0) {
+        bang.setAttribute('display', 'none')
+      } else {
+        const phase = seconds % 2.2
+        const shake = Math.exp(-phase * 5.5) * Math.sin(42 * seconds) * 2.2
+        const drop = reduced
+          ? -26
+          : -26 - (1 - Math.min(1, seconds / 0.28)) * 70
+        bang.setAttribute('display', '')
+        bang.setAttribute(
+          'transform',
+          `translate(0 ${drop.toFixed(2)}) rotate(${shake.toFixed(2)} ${BOT_MARK_CENTER} 40.3)`
+        )
+      }
+    }
+
+    draw(0)
+    if (reduced) return
+
+    let frameId = 0
+    const started = performance.now()
+    const tick = (now: number) => {
+      draw((now - started) / 1000)
+      frameId = requestAnimationFrame(tick)
+    }
+    frameId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frameId)
+  }, [geometry, reduced, state])
 
   return (
     <span
@@ -374,55 +182,41 @@ export function BotMark({
       className={cn('inline-block overflow-visible', className)}
       style={{ width: size, height: size }}
     >
-      <MotionConfig reducedMotion={reduced ? 'always' : 'never'}>
-        <motion.span
-          key={state}
-          data-state={state}
-          className="block h-full w-full"
-          style={{ transformOrigin: '50% 70%' }}
-          initial={poseStart(body.animate)}
-          animate={body.animate}
-          transition={body.transition}
-        >
-          <svg
-            viewBox="-15 -15 259 259"
-            width={size}
-            height={size}
-            aria-hidden
-            className="block overflow-visible"
+      <svg
+        viewBox="-15 -15 259 259"
+        width={size}
+        height={size}
+        aria-hidden
+        data-state={state}
+        className="block overflow-visible"
+      >
+        <defs>
+          <clipPath id={clipPathId}>
+            <path d={geometry.path} />
+          </clipPath>
+        </defs>
+        <g ref={bodyRef}>
+          <g
+            transform={`translate(${BOT_MARK_CENTER} ${BOT_MARK_CENTER}) scale(${geometry.scale}) translate(${-BOT_MARK_CENTER} ${-BOT_MARK_CENTER})`}
           >
-            <defs>
-              <clipPath id={clipPathId}>
-                <path d={head} />
-              </clipPath>
-            </defs>
-            <g transform={MARK_TRANSFORM}>
-              <path d={head} fill={color} />
-              <g
-                clipPath={`url(#${clipPathId})`}
-                transform={`translate(${offset.x} ${offset.y})`}
-              >
-                <MotionG
-                  animate={{ scaleY: eyeScaleY, x: gaze.x, y: gaze.y }}
-                  initial={{
-                    scaleY: squint,
-                    x: channelStart(gaze.x),
-                    y: channelStart(gaze.y),
-                  }}
-                  style={{
-                    transformBox: 'fill-box',
-                    transformOrigin: 'center',
-                  }}
-                  transition={eyeTransition(state, reduced, blink)}
-                >
-                  <path d={BOT_MARK_EYE_PATHS[0]} fill="#fff" />
-                  <path d={BOT_MARK_EYE_PATHS[1]} fill="#fff" />
-                </MotionG>
-              </g>
+            <path d={geometry.path} fill={color} />
+            <g clipPath={`url(#${clipPathId})`}>
+              <path ref={leftEyeRef} d={restingEyePath(shape, 0)} fill="#fff" />
+              <path
+                ref={rightEyeRef}
+                d={restingEyePath(shape, 1)}
+                fill="#fff"
+              />
             </g>
-          </svg>
-        </motion.span>
-      </MotionConfig>
+            <path
+              ref={bangRef}
+              d={BOT_MARK_BANG_PATH}
+              fill="#fff"
+              display="none"
+            />
+          </g>
+        </g>
+      </svg>
     </span>
   )
 }
