@@ -1,8 +1,25 @@
 export type BotMarkShape = 'blob' | 'triangle' | 'squircle'
 
+/**
+ * Avatar motion from the Grok Bot lifecycle: calm at rest, a nod when work
+ * arrives, then thinking, working, waiting, blocked, and done.
+ */
+export const BOT_MARK_STATES = [
+  'idle',
+  'acknowledge',
+  'thinking',
+  'working',
+  'waiting',
+  'blocked',
+  'done',
+] as const
+
+export type BotMarkState = (typeof BOT_MARK_STATES)[number]
+
 export type BotMarkConfig = {
   color: string
   shape: BotMarkShape
+  state?: BotMarkState
 }
 
 export type GrokBotRoutine = {
@@ -23,6 +40,7 @@ export type GrokBotAgent = BotMarkConfig & {
   unread?: boolean
   bubble?: string
   routines?: GrokBotRoutine[]
+  state?: BotMarkState
 }
 
 export type GrokBotAgentSettings = Pick<

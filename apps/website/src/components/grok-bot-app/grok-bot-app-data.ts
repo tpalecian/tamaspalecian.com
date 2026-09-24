@@ -11,6 +11,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       preview: 'booked the venue and sent the confirmation around.',
       color: '#54B9A6',
       shape: 'blob',
+      state: 'idle',
       title: 'Chief of staff',
       description:
         'Keeps the calendar, the offsite, and the loose ends moving so nothing sits waiting on you.',
@@ -30,6 +31,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       preview: 'Done.',
       color: '#F19D38',
       shape: 'blob',
+      state: 'working',
       title: 'Sales',
       description:
         'Works the pipeline overnight: researches the prospects worth a look, pulls their context together, and leaves sequences drafted for the morning.',
@@ -50,6 +52,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       preview: 'sent. inbox at zero, 5 drafts parked for tomorrow.',
       color: '#6464EF',
       shape: 'triangle',
+      state: 'done',
       title: 'Inbox',
       description:
         'Triages overnight mail, sends what is ready, and parks the rest as drafts for the morning.',
@@ -70,6 +73,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       preview: "invite's out to vicky. globex note held in drafts.",
       color: '#885CF5',
       shape: 'squircle',
+      state: 'waiting',
       title: 'Accounts',
       description:
         'Keeps customer threads current: invites, follow-ups, and notes held until you say send.',
@@ -82,6 +86,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       preview: '3 intros drafted in your voice, held for your ok.',
       color: '#3C82F6',
       shape: 'blob',
+      state: 'thinking',
       title: 'Recruiting',
       description:
         'Sources quietly against open reqs, screens overnight, and holds intros until you approve them.',
@@ -101,6 +106,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       preview: 'report filed. 9 receipts, nothing outstanding.',
       color: '#ED712E',
       shape: 'blob',
+      state: 'acknowledge',
       title: 'Expenses',
       description:
         'Collects receipts, files the weekly report, and flags anything still outstanding.',
@@ -120,6 +126,7 @@ export const grokBotAppSnapshot: GrokBotAppProps = {
       preview: "that leaves the pipeline. i'd spin up a dedicated agent.",
       color: '#54B9A6',
       shape: 'blob',
+      state: 'blocked',
       title: 'Offsite',
       description:
         'A small crew covering venue, invites, and whatever is still open for the offsite.',

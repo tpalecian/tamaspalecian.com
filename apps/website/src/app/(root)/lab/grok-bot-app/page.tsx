@@ -26,6 +26,12 @@ export default function GrokBotAppLabPage() {
             className="text-accent underline-offset-2 hover:underline"
           >
             Portfolio components
+          </Link>{' '}
+          <Link
+            href="/lab/grok-bot"
+            className="text-accent underline-offset-2 hover:underline"
+          >
+            Grok bot marks
           </Link>
         </p>
       </header>
