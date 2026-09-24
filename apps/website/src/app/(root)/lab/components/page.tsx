@@ -140,6 +140,18 @@ export default function ComponentsLabPage() {
             Design tokens
           </Link>
           <Link
+            href="/lab/grok-bot-app"
+            className="rounded-md border border-border-subtle px-3 py-1.5 text-caption text-muted transition-colors hover:bg-surface-elevated"
+          >
+            Grok bot app
+          </Link>
+          <Link
+            href="/lab/grok-bot"
+            className="rounded-md border border-border-subtle px-3 py-1.5 text-caption text-muted transition-colors hover:bg-surface-elevated"
+          >
+            Grok bot
+          </Link>
+          <Link
             href="/"
             className="rounded-md border border-border-subtle bg-surface-elevated px-3 py-1.5 text-caption text-foreground transition-colors hover:bg-surface-sunken"
           >
